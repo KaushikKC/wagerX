@@ -1,0 +1,16 @@
+[package]
+name = "./"
+version = "1.0.0"
+authors = []
+
+[addresses]
+wager_x = "0x959c820a4ba94ab3065b416fc354a87867fb08818dc35b738a59475361265505"
+
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "testnet"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-dependencies]

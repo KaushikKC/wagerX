@@ -1,17 +1,47 @@
 const Bet = require("../models/Bet");
 const Market = require("../models/Market");
+const User = require("../models/User");
 
 exports.placeBet = async (req, res) => {
   try {
-    const { marketId, user, amount } = req.body;
+    const { marketId, amount, option, walletAddress } = req.body;
 
     const market = await Market.findById(marketId);
-    if (!market) return res.status(404).json({ message: "Market not found" });
+    if (!market || market.status !== "active") {
+      return res.status(400).json({ message: "Invalid market" });
+    }
 
-    const bet = new Bet({ market: marketId, user, amount });
-    await bet.save();
+    const user = await User.findOne({ walletAddress });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    res.json({ message: "Bet placed successfully", bet });
+    // Add bet to market
+    market.bets.push({
+      user: user._id,
+      amount,
+      option,
+    });
+    market.totalPool += amount;
+    await market.save();
+
+    // Update user's betting history
+    user.bettingHistory.push({
+      market: market._id,
+      amount,
+      outcome: "pending",
+    });
+    await user.save();
+
+    // Broadcast bet placement
+    WebSocketServer.broadcast("NEW_BET", {
+      marketId,
+      user: user.username,
+      amount,
+      option,
+    });
+
+    res.json({ message: "Bet placed successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error placing bet", error });
   }

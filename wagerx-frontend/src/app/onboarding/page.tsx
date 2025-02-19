@@ -11,13 +11,14 @@ function OnboardingPage() {
       <section className="relative overflow-hidden px-4 pt-16 md:px-6 md:pt-24">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="bg-gradient-to-r font-oxanium from-white to-white/80 bg-clip-text text-4xl font-bold text-transparent sm:text-6xl md:text-7xl">
-            The Future Is Predictable – Bet On It
+            Predict, Compete, Win – A Social Betting Playground for Friends!
           </h1>
           <p className="mx-auto mt-6 max-w-3xl text-lg text-white font-oxanium">
-            Decentralized Prediction Markets For{" "}
-            <span className="text-[#F81DFB]">ESG Trends</span>,{" "}
-            <span className="text-[#F81DFB]">Disasters </span>
-            <span className="text-[#F81DFB]">And Global Events</span>.
+            Turn friendly wagers into fun, token-powered competitions. Bet on{" "}
+            <span className="text-[#F81DFB]">real-life goals, </span>,{" "}
+            <span className="text-[#F81DFB]">track progress, </span>
+            <span className="text-[#F81DFB]">track progress, </span>and
+            <span className="text-[#F81DFB]">climb the leaderboard </span>!
           </p>
         </div>
         <div className="mx-[400px] mt-10">

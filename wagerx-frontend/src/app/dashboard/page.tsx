@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout";
 import { MarketCard } from "@/components/market-card";
-import { StatsCard } from "@/components/stats-card";
+// import { StatsCard } from "@/components/stats-card";
 import Chatbot from "@/components/ui/ChatBot";
 import { UserCircle } from "lucide-react";
 
@@ -44,9 +44,8 @@ export default function Dashboard() {
         <section className="mt-12">
           <h2 className="flex items-center gap-2 font-oxanium text-xl font-bold text-white">
             USER STATISTICS
-            <UserCircle className="h-8 w-8 text-gray-400" />
           </h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatsCard
               title="Current Holdings"
               value="$ 14,211,030"
@@ -55,7 +54,7 @@ export default function Dashboard() {
             <StatsCard title="Markets Participated" value="130" />
             <StatsCard title="Leaderboard Position" value="#21" />
             <StatsCard title="Tokenized Positions" value="15" />
-          </div>
+          </div> */}
         </section>
         <div
           className="absolute  inset-[420px] bg-center left-[-200px] bg-cover h-[600px] opacity-70"

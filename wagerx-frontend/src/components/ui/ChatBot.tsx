@@ -25,12 +25,12 @@ const Chatbot = () => {
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           type: variableType,
-          query,
-        }),
+          query
+        })
       });
 
       const data = await response.json();
@@ -38,9 +38,9 @@ const Chatbot = () => {
         const botReply = {
           id: Date.now(),
           type: "bot",
-          text: data.message,
+          text: data.message
         };
-        setMessages((prev) => [...prev, botReply]); // Display API response in the UI
+        setMessages(prev => [...prev, botReply]); // Display API response in the UI
       }
     } catch (error) {
       console.error("Error making API call:", error);
@@ -54,7 +54,7 @@ const Chatbot = () => {
     if (input.trim() === "") return;
 
     const userMessage = { id: Date.now(), type: "user", text: input };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     await sendApiCall(input); // Trigger API call with user input
     setInput(""); // Clear input field
   };
@@ -82,14 +82,14 @@ Minimum stake, Accepted Token, Oracle Source, and Description.`;
 
     const newMessages = [
       { id: Date.now(), type: "user", text: userMessage },
-      { id: Date.now() + 1, type: "bot", text: botMessage },
+      { id: Date.now() + 1, type: "bot", text: botMessage }
     ];
-    setMessages((prev) => [...prev, ...newMessages]);
+    setMessages(prev => [...prev, ...newMessages]);
     setMenuOpen(false);
   };
 
   return (
-    <div className="font-oxaniumregular">
+    <div className="font-oxanium">
       {/* Minimalistic Chat Icon */}
       <div
         className="fixed bottom-4 right-4 bg-[#AD1AAF] rounded-full p-4 cursor-pointer shadow-lg"
@@ -99,7 +99,7 @@ Minimum stake, Accepted Token, Oracle Source, and Description.`;
       </div>
 
       {/* Chat Window */}
-      {isOpen && (
+      {isOpen &&
         <div className="fixed bottom-16 right-4 w-80 bg-gray-900 rounded-xl shadow-lg flex flex-col">
           {/* Chat Header */}
           <div className="bg-[#AD1AAF] text-white py-3 px-4 rounded-t-xl font-semibold">
@@ -109,16 +109,17 @@ Minimum stake, Accepted Token, Oracle Source, and Description.`;
           {/* Chat Messages */}
           <div
             style={{
-              maxHeight: "500px", 
-              overflowY: "auto",  
+              maxHeight: "500px",
+              overflowY: "auto"
             }}
             className="p-4 space-y-4"
           >
-            {messages.map((msg) => (
+            {messages.map(msg =>
               <div
                 key={msg.id}
-                className={`flex ${msg.type === "user" ? "flex-row-reverse" : ""
-                  } gap-4`}
+                className={`flex ${msg.type === "user"
+                  ? "flex-row-reverse"
+                  : ""} gap-4`}
               >
                 <Image
                   src={
@@ -134,16 +135,15 @@ Minimum stake, Accepted Token, Oracle Source, and Description.`;
 
                 <div
                   className={`max-w-[70%] p-3 border ${msg.type === "user"
-                      ? "bg-[#AD1AAF]/10 border-[#AD1AAF] rounded-l-xl rounded-br-2xl"
-                      : "bg-white/10 border-purple-700 rounded-r-xl rounded-bl-2xl"
-                    }`}
+                    ? "bg-[#AD1AAF]/10 border-[#AD1AAF] rounded-l-xl rounded-br-2xl"
+                    : "bg-white/10 border-purple-700 rounded-r-xl rounded-bl-2xl"}`}
                 >
                   <p className="text-sm text-white whitespace-pre-wrap">
                     {msg.text}
                   </p>
                 </div>
               </div>
-            ))}
+            )}
           </div>
 
           {/* Chat Input */}
@@ -155,7 +155,7 @@ Minimum stake, Accepted Token, Oracle Source, and Description.`;
                 className="text-[#AD1AAF] cursor-pointer"
                 onClick={() => setMenuOpen(!menuOpen)}
               />
-              {menuOpen && (
+              {menuOpen &&
                 <div className="absolute bottom-10 left-0 bg-gray-700 text-white rounded-lg shadow-lg py-2 w-40">
                   <div
                     className="hover:bg-gray-600 px-4 py-2 cursor-pointer"
@@ -175,14 +175,13 @@ Minimum stake, Accepted Token, Oracle Source, and Description.`;
                   >
                     To Vote
                   </div>
-                </div>
-              )}
+                </div>}
             </div>
 
             <input
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={e => setInput(e.target.value)}
               placeholder="Type your message..."
               className="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-400 ml-3"
             />
@@ -193,8 +192,7 @@ Minimum stake, Accepted Token, Oracle Source, and Description.`;
               Send
             </button>
           </div>
-        </div>
-      )}
+        </div>}
     </div>
   );
 };

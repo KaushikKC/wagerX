@@ -9,7 +9,7 @@ export default function Dashboard() {
     <Layout>
       <div className="mx-auto max-w-7xl px-4 py-8 overflow-hidden">
         <section>
-          <h2 className="flex items-center gap-2 font-oxaniumsemibold text-xl font-bold text-white">
+          <h2 className="flex items-center gap-2 font-oxanium text-xl font-bold text-white">
             RECENT TRENDING MARKETS
             <span className="text-orange-500">🔥</span>
           </h2>
@@ -42,7 +42,7 @@ export default function Dashboard() {
         </section>
 
         <section className="mt-12">
-          <h2 className="flex items-center gap-2 font-oxaniumsemibold text-xl font-bold text-white">
+          <h2 className="flex items-center gap-2 font-oxanium text-xl font-bold text-white">
             USER STATISTICS
             <UserCircle className="h-8 w-8 text-gray-400" />
           </h2>
@@ -60,26 +60,26 @@ export default function Dashboard() {
         <div
           className="absolute  inset-[420px] bg-center left-[-200px] bg-cover h-[600px] opacity-70"
           style={{
-            backgroundImage: "url('/images/Vector-1.png')",
+            backgroundImage: "url('/images/Vector-1.png')"
           }}
         />
         <div
           className="absolute  inset-[420px] bg-center right-[100px] bg-cover h-[600px] opacity-70"
           style={{
-            backgroundImage: "url('/images/Vector-1.png')",
+            backgroundImage: "url('/images/Vector-1.png')"
           }}
         />
 
         <section className="mt-12">
-          <h2 className="flex items-center gap-2 text-xl font-oxaniumsemibold font-bold text-white">
+          <h2 className="flex items-center gap-2 text-xl font-oxanium font-bold text-white">
             ABOUT US
             <span className="text-orange-500">📜</span>
           </h2>
           <div className="text-white ">
-            <h3 className="font-bold font-oxaniumsemibold mt-4">
+            <h3 className="font-bold font-oxanium mt-4">
               Why Tokenize Your Bet?
             </h3>
-            <ul className="list-disc list-inside mt-2 font-oxaniummedium">
+            <ul className="list-disc list-inside mt-2 font-oxanium">
               <li>
                 <strong>Ownership:</strong> Tokenizing your bet gives you full
                 ownership of your market position, turning it into a tradable
@@ -102,10 +102,8 @@ export default function Dashboard() {
               </li>
             </ul>
 
-            <h3 className="font-bold mt-4 font-oxaniumsemibold">
-              How It Works?
-            </h3>
-            <ul className="list-disc list-inside mt-2 font-oxaniummedium">
+            <h3 className="font-bold mt-4 font-oxanium">How It Works?</h3>
+            <ul className="list-disc list-inside mt-2 font-oxanium">
               <li>
                 <strong>Place a Bet:</strong> Start by placing your bet in a
                 market on Polymarket, just as you normally would.

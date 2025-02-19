@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { UserCircle } from "lucide-react";
-import S from "@/images/s.png";
-import Image from "next/image";
 
 export function Navbar() {
   return (
@@ -19,8 +17,7 @@ export function Navbar() {
       <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-4 pt-[42px]">
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <span className="text-3xl font-oxaniumbold text-white">PREDICT</span>
-          <Image src={S} height={65} alt="Logo" />
+          <span className="text-3xl font-oxanium text-white">WAGERX</span>
         </Link>
 
         {/* Center Navigation */}
@@ -28,31 +25,31 @@ export function Navbar() {
           <div className="flex items-center gap-8">
             <Link
               href="/dashboard"
-              className="text-sm font-medium font-oxaniummedium text-gray-200 transition-colors hover:text-white"
+              className="text-sm font-medium font-oxanium text-gray-200 transition-colors hover:text-white"
             >
               DASHBOARD
             </Link>
             <Link
               href="/markets"
-              className="text-sm font-medium font-oxaniummedium text-gray-200 transition-colors hover:text-white"
+              className="text-sm font-medium font-oxanium text-gray-200 transition-colors hover:text-white"
             >
               MARKETS
             </Link>
             <Link
               href="/portfolio"
-              className="text-sm font-medium font-oxaniummedium text-gray-200 transition-colors hover:text-white"
+              className="text-sm font-medium font-oxanium text-gray-200 transition-colors hover:text-white"
             >
               PORTFOLIO
             </Link>
             <Link
               href="/NFTMarket"
-              className="text-sm font-medium font-oxaniummedium text-gray-200 transition-colors hover:text-white"
+              className="text-sm font-medium font-oxanium text-gray-200 transition-colors hover:text-white"
             >
               NFT MARKETPLACE
             </Link>
             <Link
               href="/proposals"
-              className="text-sm font-medium font-oxaniummedium text-gray-200 transition-colors hover:text-white"
+              className="text-sm font-medium font-oxanium text-gray-200 transition-colors hover:text-white"
             >
               CREATE MARKET
             </Link>
@@ -68,9 +65,7 @@ export function Navbar() {
             <button className="relative mx-1 bg-[#AD1AAF] text-white px-6 py-3 text-lg font-medium transition-all hover:bg-[#8c158e] hover:shadow-lg hover-shake h-[55px]">
               {/* Button Text */}
               <div className="first-bar" />
-              <span className="relative z-10 font-oxaniummedium">
-                Connect Wallet
-              </span>
+              <span className="relative z-10 font-oxanium">Connect Wallet</span>
               <div className="last-bar" />
             </button>
             <div className="shape-container">

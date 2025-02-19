@@ -1,7 +1,6 @@
 import { Layout } from "@/components/layout";
 import { Wallet, Box, Target, BarChart3 } from "lucide-react";
 import Image from "next/image";
-import laptop from "@/images/laptop.png";
 import Link from "next/link";
 
 export default function LandingPage() {
@@ -11,10 +10,10 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="relative overflow-hidden px-4 pt-16 md:px-6 md:pt-24">
           <div className="mx-auto max-w-7xl text-center">
-            <h1 className="bg-gradient-to-r font-oxaniumsemibold from-white to-white/80 bg-clip-text text-4xl font-bold text-transparent sm:text-6xl md:text-7xl">
+            <h1 className="bg-gradient-to-r font-oxanium from-white to-white/80 bg-clip-text text-4xl font-bold text-transparent sm:text-6xl md:text-7xl">
               The Future Is Predictable – Bet On It
             </h1>
-            <p className="mx-auto mt-6 max-w-3xl text-lg text-white font-oxaniummedium">
+            <p className="mx-auto mt-6 max-w-3xl text-lg text-white font-oxanium">
               Decentralized Prediction Markets For{" "}
               <span className="text-[#F81DFB]">ESG Trends</span>,{" "}
               <span className="text-[#F81DFB]">Disasters </span>
@@ -31,7 +30,7 @@ export default function LandingPage() {
                 >
                   {/* Button Text */}
                   <div className="first-bar" />
-                  <span className="relative z-10 font-oxaniummedium">
+                  <span className="relative z-10 font-oxanium">
                     Get Set Go!
                   </span>
                   <div className="last-bar" />
@@ -43,7 +42,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* MacBook Mockup */}
+          {/* MacBook Mockup
           <div className="relative mx-auto mt-14 max-w-5xl">
             <div className="relative rounded-t-xlp-2">
               <Image
@@ -54,7 +53,7 @@ export default function LandingPage() {
                 className="rounded-lg"
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Purple Gradient Blob */}
           <div className="absolute bottom-0 left-0 right-0 h-[300px] translate-y-1/2 bg-gradient-to-b from-transparent via-[#AD1AAF] to-[#AD1AAF] blur-3xl" />
@@ -63,8 +62,8 @@ export default function LandingPage() {
         {/* Why Choose Section */}
         <section className="relative px-4 pt-32 md:px-6">
           <div className="mx-auto max-w-7xl">
-            <h2 className="text-center text-3xl font-bold font-oxaniummedium text-white md:text-4xl">
-              Why to choose PREDICTS?
+            <h2 className="text-center text-3xl font-bold font-oxanium text-white md:text-4xl">
+              Why to choose WAGERX?
             </h2>
             <div className="mt-16 flex flex-col items-center justify-center z-10 rel">
               {/* Wrapper for all cards */}
@@ -117,7 +116,7 @@ export default function LandingPage() {
         {/* How it Works Section */}
         <section className="px-4 py-32 md:px-6">
           <div className="mx-auto max-w-7xl">
-            <h2 className="text-center text-3xl font-bold font-oxaniumsemibold text-white md:text-4xl">
+            <h2 className="text-center text-3xl font-bold font-oxanium text-white md:text-4xl">
               How it works
             </h2>
             <div className="mt-16">
@@ -135,7 +134,7 @@ export default function LandingPage() {
                     <div className="rounded-full bg-white/10 p-4">
                       <item.icon className="h-9 w-9 text-[#AD1AAF]" />
                     </div>
-                    <span className="mt-4 text-md font-oxaniumregular text-white">
+                    <span className="mt-4 text-md font-oxanium text-white">
                       {item.text}
                     </span>
                   </div>
@@ -157,10 +156,8 @@ const Footer = () => {
     <footer className="bg-transaprent border-t-2 border-white/20 text-white py-8">
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex flex-col items-center">
-          <h3 className="text-lg font-bold font-oxaniumsemibold">
-            Stay Connected
-          </h3>
-          <p className="mt-2 text-center font-oxaniummedium">
+          <h3 className="text-lg font-bold font-oxanium">Stay Connected</h3>
+          <p className="mt-2 text-center font-oxanium">
             Join our community and stay updated with the latest news and offers.
           </p>
           <div className="mt-4 flex space-x-4">
@@ -186,7 +183,7 @@ const Footer = () => {
         </div>
         <div className="mt-4 border-t border-gray-600 pt-4 text-center">
           <p className="text-sm">
-            &copy; {new Date().getFullYear()} PredictS. All rights reserved.
+            &copy; {new Date().getFullYear()} WAGERX. All rights reserved.
           </p>
         </div>
       </div>

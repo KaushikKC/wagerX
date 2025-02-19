@@ -1,7 +1,7 @@
 const express = require("express");
 const Market = require("../models/Market");
 const router = express.Router();
-const settlementController = require("./controllers/MarketSettlementController");
+const settlementController = require("../controllers/MarketSettlementController");
 
 router.post("/create", async (req, res) => {
   const { title, description, creator } = req.body;
@@ -17,7 +17,7 @@ router.get("/list", async (req, res) => {
   res.json(markets);
 });
 
-app.post("/:marketId/settle", async (req, res) => {
+router.post("/:marketId/settle", async (req, res) => {
   try {
     const result = await settlementController.settleMarket(req.params.marketId);
     res.json(result);

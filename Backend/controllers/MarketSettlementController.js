@@ -1,5 +1,5 @@
 const Market = require("../models/Market");
-const PythOracleService = require("../utils/PythOracleService");
+const PythOracleService = require("../utils/pythOracle");
 const { WebSocketServer } = require("../utils/websocket");
 
 class MarketSettlementController {

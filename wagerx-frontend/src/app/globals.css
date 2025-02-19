@@ -19,3 +19,115 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.navbar-title {
+  font-family: "oxanium", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.shape-container {
+  position: relative;
+  height: 70px; /* Total height of the shape */
+  background-color: #140c1f; /* Background color */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.right-bar {
+  width: 6px; /* Width of the right purple section */
+  height: 45%; /* Adjust the height as per design */
+  background-color: #ad1aaf; /* Purple color */
+}
+
+.last-bar {
+  height: 40px;
+  background-color: #140c1f;
+  width: 10px;
+  position: absolute;
+  right: 0;
+  top: 7px;
+}
+
+.first-bar {
+  height: 40px;
+  background-color: #140c1f;
+  width: 10px;
+  position: absolute;
+  left: 0;
+  top: 7px;
+}
+
+.last-betyes-bar {
+  height: 20px;
+  background-color: #80ba6f;
+  width: 3px;
+}
+
+.first-betyes-bar {
+  height: 20px;
+  background-color: #80ba6f;
+  width: 3px;
+}
+
+.last-betno-bar {
+  height: 20px;
+  background-color: #ff5555;
+  width: 3px;
+}
+
+.first-betno-bar {
+  height: 20px;
+  background-color: #ff5555;
+  width: 3px;
+}
+
+.last-purple-bar {
+  height: 20px;
+  background-color: #ad1aaf;
+  width: 4px;
+}
+
+.first-purple-bar {
+  height: 20px;
+  background-color: #ad1aaf;
+  width: 4px;
+}
+
+@keyframes glow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-glow {
+  animation: glow 6s infinite alternate;
+  background-size: 200% 200%;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+}
+
+.hover-shake:hover {
+  animation: shake 0.3s ease-in-out;
+}

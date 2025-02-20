@@ -1,207 +1,16 @@
-// import { Layout } from "@/components/layout";
-// import { Wallet, Box, Target, BarChart3 } from "lucide-react";
-// import Image from "next/image";
-// import Link from "next/link";
 
-// export default function LandingPage() {
-//   return (
-//     <Layout>
-//       <div className="relative">
-//         {/* Hero Section */}
-//         <section className="relative overflow-hidden px-4 pt-16 md:px-6 md:pt-24">
-//           <div className="mx-auto max-w-7xl text-center">
-//             <h1 className="bg-gradient-to-r font-oxanium from-white to-white/80 bg-clip-text text-4xl font-bold text-transparent sm:text-6xl md:text-7xl">
-//               Predict, Compete, Win – A Social Betting Playground for Friends!
-//             </h1>
-//             <p className="mx-auto mt-6 max-w-3xl text-lg text-white font-oxanium">
-//               Turn friendly wagers into fun, token-powered competitions. Bet on{" "}
-//               <span className="text-[#F81DFB]">real-life goals, </span>,{" "}
-//               <span className="text-[#F81DFB]">track progress, </span>
-//               <span className="text-[#F81DFB]">track progress, </span>and
-//               <span className="text-[#F81DFB]">climb the leaderboard </span>!
-//             </p>
-//             <div className="mt-[80px]">
-//               <div className="flex items-center justify-center">
-//                 <div className="shape-container">
-//                   <div className="right-bar" />
-//                 </div>
-//                 <Link
-//                   href="/onboarding"
-//                   className="relative mx-1 bg-[#AD1AAF] text-white px-6 py-3 text-lg font-medium transition-all hover:bg-[#8c158e] hover:shadow-lg hover-shake"
-//                 >
-//                   {/* Button Text */}
-//                   <div className="first-bar" />
-//                   <span className="relative z-10 font-oxanium">
-//                     Get Set Go!
-//                   </span>
-//                   <div className="last-bar" />
-//                 </Link>
-//                 <div className="shape-container">
-//                   <div className="right-bar" />
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* MacBook Mockup
-//           <div className="relative mx-auto mt-14 max-w-5xl">
-//             <div className="relative rounded-t-xlp-2">
-//               <Image
-//                 src={laptop}
-//                 alt="Platform Preview"
-//                 width={1200}
-//                 height={800}
-//                 className="rounded-lg"
-//               />
-//             </div>
-//           </div> */}
-
-//           {/* Purple Gradient Blob */}
-//           <div className="absolute bottom-0 left-0 right-0 h-[300px] translate-y-1/2 bg-gradient-to-b from-transparent via-[#AD1AAF] to-[#AD1AAF] blur-3xl" />
-//         </section>
-
-//         {/* Why Choose Section */}
-//         <section className="relative px-4 pt-32 md:px-6">
-//           <div className="mx-auto max-w-7xl">
-//             <h2 className="text-center text-3xl font-bold font-oxanium text-white md:text-4xl">
-//               Why to choose WAGERX?
-//             </h2>
-//             <div className="mt-16 flex flex-col items-center justify-center z-10 rel">
-//               {/* Wrapper for all cards */}
-//               <div className="w-full max-w-6xl bg-gradient-to-b from-white/5 to-white/10 p-8 rounded-[100px] backdrop-blur-xl">
-//                 <div className="grid grid-cols-1 gap-8 md:grid-cols-3 items-center">
-//                   {/* Cards */}
-//                   {[
-//                     {
-//                       title: "ESG Scoring Predictions",
-//                       description:
-//                         "Bet On Companies’ ESG Scores And Drive Accountability."
-//                     },
-//                     {
-//                       title: "Disaster Impact Markets",
-//                       description:
-//                         "Predict Economic Impacts And Recovery Timelines."
-//                     },
-//                     {
-//                       title: "Tokenized Positions",
-//                       description:
-//                         "Trade Or Stake Your Predictions As NFTs And ERC20 Tokens."
-//                     }
-//                   ].map((item, index) =>
-//                     <div
-//                       key={index}
-//                       className="group relative rounded-2xl bg-gradient-to-b from-transparent via-transparent to-transparent p-8 transition hover:bg-white/10"
-//                     >
-//                       {/* Vertical Divider (Only for second and third cards) */}
-//                       {index > 0 &&
-//                         <div className="absolute -left-4 top-0 h-full w-px bg-gradient-to-b from-transparent via-gray-600 to-transparent" />}
-//                       <h3 className="text-center text-xl font-semibold text-white">
-//                         {item.title}
-//                       </h3>
-//                       <p className="mt-4 text-center text-gray-400">
-//                         {item.description}
-//                       </p>
-//                     </div>
-//                   )}
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </section>
-//         <div
-//           className="absolute  inset-[0px] top-[1400px] left-[400px] bg-no-repeat w-[500px]  h-[700px]  "
-//           style={{
-//             backgroundImage: "url('/images/Vector-1.png')"
-//           }}
-//         />
-//         {/* How it Works Section */}
-//         <section className="px-4 py-32 md:px-6">
-//           <div className="mx-auto max-w-7xl">
-//             <h2 className="text-center text-3xl font-bold font-oxanium text-white md:text-4xl">
-//               How it works
-//             </h2>
-//             <div className="mt-16">
-//               <div className="relative flex justify-between">
-//                 {[
-//                   { icon: Wallet, text: "Connect Wallet" },
-//                   { icon: Box, text: "Explore Markets" },
-//                   { icon: Target, text: "Place Your Bet" },
-//                   { icon: BarChart3, text: "Trade Them For Sale" }
-//                 ].map((item, i) =>
-//                   <div
-//                     key={i}
-//                     className="relative z-10 flex flex-col items-center"
-//                   >
-//                     <div className="rounded-full bg-white/10 p-4">
-//                       <item.icon className="h-9 w-9 text-[#AD1AAF]" />
-//                     </div>
-//                     <span className="mt-4 text-md font-oxanium text-white">
-//                       {item.text}
-//                     </span>
-//                   </div>
-//                 )}
-//                 {/* Connecting Line */}
-//                 <div className="absolute top-7 left-0 right-0 border-t-2 border-dashed border-purple-500/20" />
-//               </div>
-//             </div>
-//           </div>
-//         </section>
-//       </div>
-//       <Footer />
-//     </Layout>
-//   );
-// }
-
-// const Footer = () => {
-//   return (
-//     <footer className="bg-transaprent border-t-2 border-white/20 text-white py-8">
-//       <div className="mx-auto max-w-7xl px-4">
-//         <div className="flex flex-col items-center">
-//           <h3 className="text-lg font-bold font-oxanium">Stay Connected</h3>
-//           <p className="mt-2 text-center font-oxanium">
-//             Join our community and stay updated with the latest news and offers.
-//           </p>
-//           <div className="mt-4 flex space-x-4">
-//             <a href="#" className="text-gray-400 hover:text-white">
-//               <span className="sr-only">Facebook</span>
-//               <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-//                 <path d="M22.675 0h-21.35C.6 0 0 .6 0 1.325v21.35C0 23.4.6 24 1.325 24h21.35C23.4 24 24 23.4 24 22.675V1.325C24 .6 23.4 0 22.675 0zm-3.15 12.1h-3.1v10.9h-4.1V12.1h-2.7v-4.1h2.7V6.1c0-3.1 1.8-4.8 4.5-4.8 1.3 0 2.5.1 2.8.1v3.2h-1.9c-1.5 0-1.8.7-1.8 1.7v2.2h3.6l-.5 4.1z" />
-//               </svg>
-//             </a>
-//             <a href="#" className="text-gray-400 hover:text-white">
-//               <span className="sr-only">Twitter</span>
-//               <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-//                 <path d="M23.953 4.57c-.885.392-1.83.656-2.825.775 1.013-.607 1.794-1.564 2.165-2.724-.951.56-2.005.973-3.127 1.195-.896-.956-2.173-1.55-3.594-1.55-2.719 0-4.926 2.207-4.926 4.926 0 .386.045.761.127 1.124-4.092-.205-7.72-2.165-10.148-5.144-.426.731-.669 1.577-.669 2.477 0 1.71.87 3.213 2.188 4.094-.807-.026-1.566-.247-2.228-.616v.062c0 2.384 1.693 4.373 3.946 4.826-.414.112-.848.171-1.293.171-.316 0-.624-.031-.927-.086.624 1.953 2.433 3.375 4.577 3.415-1.676 1.314-3.785 2.095-6.07 2.095-.394 0-.785-.023-1.17-.067 2.174 1.394 4.768 2.206 7.548 2.206 9.055 0 14.003-7.496 14.003-13.986 0-.213-.005-.426-.014-.637.961-.693 1.8-1.56 2.46-2.549z" />
-//               </svg>
-//             </a>
-//             <a href="#" className="text-gray-400 hover:text-white">
-//               <span className="sr-only">LinkedIn</span>
-//               <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-//                 <path d="M20.447 20.452h-3.539v-5.569c0-1.327-.027-3.034-1.847-3.034-1.848 0-2.131 1.44-2.131 2.93v5.673h-3.539V9h3.396v1.563h.049c.473-.895 1.632-1.838 3.354-1.838 3.588 0 4.247 2.36 4.247 5.43v5.295zM5.337 7.5c-1.136 0-2.063.927-2.063 2.063 0 1.136.927 2.063 2.063 2.063 1.136 0 2.063-.927 2.063-2.063 0-1.136-.927-2.063-2.063-2.063zm1.769 12.952H3.568V9h3.538v11.452zM22.225 0H1.775C.794 0 0 .794 0 1.775v20.45C0 23.206.794 24 1.775 24h20.45C23.206 24 24 23.206 24 22.225V1.775C24 .794 23.206 0 22.225 0z" />
-//               </svg>
-//             </a>
-//           </div>
-//         </div>
-//         <div className="mt-4 border-t border-gray-600 pt-4 text-center">
-//           <p className="text-sm">
-//             &copy; {new Date().getFullYear()} WAGERX. All rights reserved.
-//           </p>
-//         </div>
-//       </div>
-//     </footer>
-//   );
-// };
 
 "use client";
 
 import { FeatureSection } from "@/components/FeatureSection";
+import Footer from "@/components/footer";
 import { Layout } from "@/components/layout";
 import { Wallet, Box, Target, BarChart3 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import bgPattern from "@/app/images/pattern.svg";
 
-// Utility function for scroll animations
 const useScrollAnimation = () => {
   useEffect(() => {
     const observerCallback: IntersectionObserverCallback = (entries) => {
@@ -230,49 +39,116 @@ const useScrollAnimation = () => {
 export default function LandingPage() {
   useScrollAnimation();
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
   return (
     <Layout>
       <div className="relative min-h-screen">
-        {/* Hero Section */}
         <section className="relative overflow-hidden px-4 pt-16 md:px-6 md:pt-24 2xl:pt-32">
-          <div className="mx-auto max-w-7xl text-center">
-            <h1 className="scroll-animate bg-gradient-to-r font-oxanium from-white to-white/80 bg-clip-text text-3xl font-bold text-transparent sm:text-5xl md:text-6xl 2xl:text-7xl">
-              Predict, Compete, Win – A Social Betting Playground for Friends!
-            </h1>
-            <p className="scroll-animate mx-auto mt-6 max-w-3xl text-base sm:text-lg text-white font-oxanium lg:text-xl">
-              Turn friendly wagers into fun, token-powered competitions. Bet on{" "}
-              <span className="text-[#F81DFB] animate-pulse">real-life goals</span>,{" "}
-              <span className="text-[#F81DFB] animate-pulse">track progress</span>, and{" "}
-              <span className="text-[#F81DFB] animate-pulse">climb the leaderboard</span> !
-            </p>
-            <div className="mt-[60px] md:mt-[80px]">
-              <div className="flex items-center justify-center">
-                <div className="shape-container animate-slide-right">
-                  <div className="right-bar" />
-                </div>
-                <Link
-                  href="/onboarding"
-                  className="relative mx-1 bg-[#AD1AAF] text-white px-4 sm:px-6 py-3 text-base sm:text-lg font-medium 
-                    transition-all duration-300 hover:bg-[#8c158e] hover:shadow-lg hover:scale-105 hover-shake"
-                >
-                  <div className="first-bar" />
-                  <span className="relative z-10 font-oxanium">Start Betting Now!</span>
-                  <div className="last-bar" />
-                </Link>
-                <div className="shape-container animate-slide-left">
-                  <div className="right-bar" />
-                </div>
-              </div>
-            </div>
-          </div>
+  <div className="absolute inset-0 w-full h-full">
+    <Image
+      src={bgPattern}
+      alt="Background Pattern"
+      fill
+      className={`object-repeat transition-all duration-1000 ease-out
+        ${isLoaded ? 'opacity-20 scale-100' : 'opacity-0 scale-110'}`}
+      style={{
+        filter: 'blur(0.5px)',
+        objectFit: 'repeat',
+        transform: `perspective(1000px) ${isLoaded ? 'rotateX(0deg)' : 'rotateX(-5deg)'}`,
+      }}
+      priority
+    />
+    <div 
+      className={`absolute inset-0 bg-gradient-to-b from-black/10 to-transparent
+        transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+    />
+  </div>
 
-          {/* Purple Gradient Blob */}
+  <div className="relative mx-auto max-w-7xl text-center z-10">
+    <h1 
+      className={`bg-gradient-to-r font-oxanium from-white to-white/80 bg-clip-text 
+        text-3xl font-bold text-transparent sm:text-5xl md:text-6xl 2xl:text-7xl
+        transition-all duration-1000 ease-out 
+        ${isLoaded 
+          ? 'translate-y-0 opacity-100 scale-100' 
+          : 'translate-y-8 opacity-0 scale-95'}`}
+    >
+      Predict, Compete, Win – A Social Betting Playground for Friends!
+    </h1>
+    
+    <p 
+      className={`mx-auto mt-6 max-w-3xl text-base sm:text-lg text-white 
+        font-oxanium lg:text-xl transition-all duration-1000 ease-out animate-float
+        ${isLoaded 
+          ? 'translate-y-0 opacity-100 scale-100' 
+          : 'translate-y-8 opacity-0 scale-95'}`}
+      style={{ transitionDelay: '200ms' }}
+    >
+      Turn friendly wagers into fun, token-powered competitions. Bet on{" "}
+      <span className="inline-block text-[#F81DFB] transition-transform duration-300">
+        real-life goals
+      </span>,{" "}
+      <span className="inline-block text-[#F81DFB] transition-transform duration-300" 
+        style={{ animationDelay: '0.2s' }}>
+        track progress
+      </span>, and{" "}
+      <span className="inline-block text-[#F81DFB] transition-transform duration-300"
+        style={{ animationDelay: '0.4s' }}>
+        climb the leaderboard
+      </span>!
+    </p>
+  </div>
 
-          {/* <div className="absolute bottom-0 left-0 right-0 h-[300px] translate-y-1/2 bg-gradient-to-b from-transparent via-[#AD1AAF] to-[#AD1AAF] blur-3xl" /> */}
-        </section>
+  <div 
+    className={`my-[60px] md:my-[80px] transition-all duration-1000 ease-out
+      ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
+    style={{ transitionDelay: '400ms' }}
+  >
+    <div className="flex items-center justify-center">
+      <div className="shape-container animate-slide-right">
+        <div className="right-bar" />
+      </div>
+      <Link
+        href="/onboarding"
+        className="group relative mx-1 bg-[#AD1AAF] text-white px-4 sm:px-6 py-3 
+          text-base sm:text-lg font-medium overflow-hidden 
+          transition-all duration-500 hover:shadow-[0_0_30px_rgba(173,26,175,0.5)]
+          hover:scale-105 transform-gpu"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-[#AD1AAF] to-[#8c158e] opacity-0 
+          group-hover:opacity-100 transition-all duration-500" />
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-50 transition-opacity duration-500
+          bg-[radial-gradient(circle_at_50%_50%,rgba(248,29,251,0.5),transparent_60%)]" />
+        <div className="first-bar" />
+        <span className="relative z-10 font-oxanium transition-transform duration-500
+          group-hover:scale-105">
+          Start Betting Now!
+        </span>
+        <div className="last-bar" />
+      </Link>
+      <div className="shape-container animate-slide-left">
+        <div className="right-bar" />
+      </div>
+    </div>
+  </div>
+
+  {/* Enhanced gradient overlay */}
+  <div 
+    className={`absolute bottom-0 left-0 right-0 h-[300px] translate-y-1/2 
+      bg-gradient-to-b from-transparent via-[#AD1AAF]/30 to-[#AD1AAF]/30 blur-3xl
+      transition-all duration-1000 ease-out
+      ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+    style={{ transitionDelay: '600ms' }}
+  />
+</section>
 
         {/* Why Choose Section */}
-        <section className="relative px-4 pt-32 md:px-6 lg:pt-40">
+        <section className="relative overflow-hidden pb-9 px-4 pt-12 md:px-6 lg:pt-20">
           <div className="mx-auto max-w-7xl">
             <h2 className="scroll-animate text-center text-2xl sm:text-3xl font-bold font-oxanium text-white md:text-4xl">
               Why choose WAGERX?
@@ -282,6 +158,8 @@ export default function LandingPage() {
 
            
             </div>
+            <div className="absolute bottom-0 left-0 right-0 h-[300px] translate-y-1/2 
+        bg-gradient-to-b from-transparent via-[#AD1AAF]/30 to-[#AD1AAF]/30 blur-3xl" />
           </div>
         </section>
 
@@ -289,89 +167,128 @@ export default function LandingPage() {
         <div
           className="absolute hidden lg:block inset-0 top-[1400px] left-[400px] bg-no-repeat w-[500px] h-[700px]"
           style={{
-            backgroundImage: "url('/images/Vector-1.png')"
+            backgroundImage: "url('app/images/Vector-1.png')"
           }}
         />
 
         {/* How it Works Section */}
-        <section className="px-4 py-32 md:px-6 lg:py-40">
-          <div className="mx-auto max-w-7xl">
-            <h2 className="scroll-animate text-center text-2xl sm:text-3xl font-bold font-oxanium text-white md:text-4xl">
-              How it works
-            </h2>
-            <div className="mt-16">
-              <div className="relative flex flex-col sm:flex-row justify-between gap-8 sm:gap-0">
-                {[
-                  { icon: Wallet, text: "Connect Wallet" },
-                  { icon: Box, text: "Explore Markets" },
-                  { icon: Target, text: "Place Your Bet" },
-                  { icon: BarChart3, text: "Trade Them For Sale" }
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="scroll-animate relative z-10 flex flex-col items-center 
-                      transition-all duration-300 hover:scale-110"
-                    style={{ animationDelay: `${i * 200}ms` }}
-                  >
-                    <div className="rounded-full bg-white/10 p-4 transition-all duration-300 hover:bg-white/20">
-                      <item.icon className="h-7 w-7 sm:h-9 sm:w-9 text-[#AD1AAF]" />
-                    </div>
-                    <span className="mt-4 text-sm sm:text-md font-oxanium text-white text-center">
-                      {item.text}
-                    </span>
-                  </div>
-                ))}
-                {/* Connecting Line */}
-                <div className="absolute top-7 left-0 right-0 border-t-2 border-dashed border-purple-500/20 hidden sm:block" />
-              </div>
+        <section className="px-4 py-12 md:px-6 lg:py-20 relative overflow-hidden">
+  <div className="mx-auto max-w-7xl">
+    <h2 className="scroll-animate text-center text-2xl sm:text-3xl font-bold font-oxanium text-white md:text-4xl">
+      How it works ?
+    </h2>
+    <p 
+      className={`mx-auto mt-6 max-w-3xl text-base sm:text-lg text-white 
+        font-oxanium lg:text-xl transition-all duration-1000 ease-out text-center
+        ${isLoaded 
+          ? 'translate-y-0 opacity-100 scale-100' 
+          : 'translate-y-8 opacity-0 scale-95'}`}
+      style={{ transitionDelay: '200ms' }}
+    >
+Bet on life’s fun moments with friends! Our social prediction market lets you create or join bets on      
+<span className="inline-block text-[#F81DFB] font-semibold transition-transform duration-300">
+sports outcomes      
+</span>,{" "}
+      <span className="inline-block text-[#F81DFB] font-semibold transition-transform duration-300" 
+        style={{ animationDelay: '0.2s' }}>
+anything—fitness goals      </span>, or {" "}
+      <span className="inline-block text-[#F81DFB] font-semibold transition-transform duration-300"
+        style={{ animationDelay: '0.4s' }}>
+       even who will finish their project first. 
+      </span> Compete, track progress, and win rewards—all powered by Web3. No complex odds, just friendly wagers with real stakes!  
+    </p>
+    <div className="mt-16">
+      <div className="relative  flex flex-col sm:flex-row justify-between gap-8 sm:gap-0">
+        {[
+          { 
+            icon: Wallet, 
+            text: "Connect Wallet",
+            description: "Link your digital wallet securely" 
+          },
+          { 
+            icon: Box, 
+            text: "Explore Markets",
+            description: "Browse through available betting options" 
+          },
+          { 
+            icon: Target, 
+            text: "Place Your Bet",
+            description: "Make your prediction with confidence" 
+          },
+          { 
+            icon: BarChart3, 
+            text: "Trade Them For Sale",
+            description: "Manage and trade your positions" 
+          }
+        ].map((item, i) => (
+          <div
+            key={i}
+            className="group scroll-animate relative z-10 flex flex-col items-center
+              transition-all duration-500 hover:scale-110"
+            style={{ 
+              animationDelay: `${i * 200}ms`,
+              transform: 'perspective(1000px)',
+            }}
+          >
+            {/* Icon Container with 3D effect */}
+            <div className="rounded-full bg-white/10 p-4 transition-all duration-500 
+              group-hover:bg-white/20 group-hover:shadow-[0_0_30px_rgba(173,26,175,0.5)]
+              transform group-hover:-translate-y-2">
+              <item.icon className="h-[40px] w-[40px] sm:h-[50px] sm:w-[50px] text-[#AD1AAF]
+                transition-all duration-500 group-hover:scale-110 group-hover:rotate-[360deg]" />
+            </div>
+
+            {/* Text with fade-up effect */}
+            <div className="relative mt-4 text-center transition-all duration-500 
+              group-hover:-translate-y-2">
+              <span className="block text-md sm:text-lg font-oxanium text-white 
+                transition-all duration-500 group-hover:text-[#F81DFB]">
+                {item.text}
+              </span>
+              
+              {/* Description tooltip */}
+              <span className="absolute top-full left-1/2 -translate-x-1/2 w-48 mt-2 
+                text-sm text-neutral-400 opacity-0 transition-all duration-500
+                group-hover:opacity-100">
+                {item.description}
+              </span>
+            </div>
+
+            {/* Particle effects */}
+            <div className="absolute -inset-2 opacity-0 group-hover:opacity-100 
+              transition-opacity duration-500 pointer-events-none">
+              {[...Array(6)].map((_, index) => (
+                <div
+                  key={index}
+                  className="absolute w-1 h-1 bg-[#AD1AAF] rounded-full"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    animation: `particle-float ${2 + Math.random()}s ease-in-out infinite`,
+                    animationDelay: `${index * 0.2}s`,
+                  }}
+                />
+              ))}
             </div>
           </div>
-        </section>
+        ))}
+     
+        {/* Animated connecting line */}
+        <div className="absolute top-10 left-0 right-0 hidden sm:block overflow-hidden">
+          <div className="h-0.5 bg-gradient-to-r from-transparent via-[#AD1AAF]/50 to-transparent
+            animate-pulse-gradient" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div className="absolute bottom-0 left-0 right-0 h-[300px] translate-y-1/2 
+        bg-gradient-to-b from-transparent via-[#AD1AAF]/30 to-[#AD1AAF]/30 blur-3xl" />
+
+</section>
+
       </div>
       <Footer />
     </Layout>
   );
 }
 
-const Footer = () => {
-  return (
-    <footer className="scroll-animate bg-transparent border-t-2 border-white/20 text-white py-8">
-\
-    <div className="bg-transaprent border-t-2 border-white/20 text-white py-8">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="flex flex-col items-center">
-          <h3 className="text-lg font-bold font-oxanium">Stay Connected</h3>
-          <p className="mt-2 text-center font-oxanium">
-            Join our community and stay updated with the latest news and offers.
-          </p>
-          <div className="mt-4 flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-white">
-              <span className="sr-only">Facebook</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M22.675 0h-21.35C.6 0 0 .6 0 1.325v21.35C0 23.4.6 24 1.325 24h21.35C23.4 24 24 23.4 24 22.675V1.325C24 .6 23.4 0 22.675 0zm-3.15 12.1h-3.1v10.9h-4.1V12.1h-2.7v-4.1h2.7V6.1c0-3.1 1.8-4.8 4.5-4.8 1.3 0 2.5.1 2.8.1v3.2h-1.9c-1.5 0-1.8.7-1.8 1.7v2.2h3.6l-.5 4.1z" />
-              </svg>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white">
-              <span className="sr-only">Twitter</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M23.953 4.57c-.885.392-1.83.656-2.825.775 1.013-.607 1.794-1.564 2.165-2.724-.951.56-2.005.973-3.127 1.195-.896-.956-2.173-1.55-3.594-1.55-2.719 0-4.926 2.207-4.926 4.926 0 .386.045.761.127 1.124-4.092-.205-7.72-2.165-10.148-5.144-.426.731-.669 1.577-.669 2.477 0 1.71.87 3.213 2.188 4.094-.807-.026-1.566-.247-2.228-.616v.062c0 2.384 1.693 4.373 3.946 4.826-.414.112-.848.171-1.293.171-.316 0-.624-.031-.927-.086.624 1.953 2.433 3.375 4.577 3.415-1.676 1.314-3.785 2.095-6.07 2.095-.394 0-.785-.023-1.17-.067 2.174 1.394 4.768 2.206 7.548 2.206 9.055 0 14.003-7.496 14.003-13.986 0-.213-.005-.426-.014-.637.961-.693 1.8-1.56 2.46-2.549z" />
-              </svg>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white">
-              <span className="sr-only">LinkedIn</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20.447 20.452h-3.539v-5.569c0-1.327-.027-3.034-1.847-3.034-1.848 0-2.131 1.44-2.131 2.93v5.673h-3.539V9h3.396v1.563h.049c.473-.895 1.632-1.838 3.354-1.838 3.588 0 4.247 2.36 4.247 5.43v5.295zM5.337 7.5c-1.136 0-2.063.927-2.063 2.063 0 1.136.927 2.063 2.063 2.063 1.136 0 2.063-.927 2.063-2.063 0-1.136-.927-2.063-2.063-2.063zm1.769 12.952H3.568V9h3.538v11.452zM22.225 0H1.775C.794 0 0 .794 0 1.775v20.45C0 23.206.794 24 1.775 24h20.45C23.206 24 24 23.206 24 22.225V1.775C24 .794 23.206 0 22.225 0z" />
-              </svg>
-            </a>
-          </div>
-        </div>
-        <div className="mt-4 border-t border-gray-600 pt-4 text-center">
-          <p className="text-sm">
-            &copy; {new Date().getFullYear()} WAGERX. All rights reserved.
-          </p>
-        </div>
-      </div>
-    </div>
-   </footer>
-  );
-};

@@ -1,81 +1,3 @@
-// "use client";
-
-// import Link from "next/link";
-// import { UserCircle } from "lucide-react";
-// import { usePathname } from "next/navigation";
-
-// export function Navbar() {
-//   const pathname = usePathname();
-
-//   const isActiveLink = (href: string) => pathname === href;
-
-//   return (
-//     <nav className="relative mb-10">
-//       <div
-//         className="absolute inset-0 bg-cover bg-center h-screen"
-//         style={{
-//           backgroundImage: "url('/images/Vector.png')"
-//         }}
-//       />
-
-//       {/* Navbar content */}
-//       <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-5 pt-[42px]">
-//         {/* Logo */}
-//         <Link href="/" className="flex items-center">
-//           <span className="text-3xl font-lato text-white font-semibold">
-//             WAGER
-//           </span>
-//           <span className="text-5xl font-lato text-white font-semibold">X</span>
-//         </Link>
-
-//         {/* Center Navigation */}
-//         <div className="bg-gradient-to-b from-white/10 h-[80px] items-center flex px-5">
-//           <div className="flex items-center gap-10">
-//             {[
-//               { href: "/dashboard", label: "DASHBOARD" },
-//               { href: "/markets", label: "MARKETS" },
-//               { href: "/portfolio", label: "PORTFOLIO" },
-//               { href: "/NFTMarket", label: "NFT MARKETPLACE" },
-//               { href: "/proposals", label: "CREATE MARKET" }
-//             ].map(({ href, label }) =>
-//               <Link
-//                 key={href}
-//                 href={href}
-//                 className={`text-sm font-medium font-oxanium transition-all duration-200
-//                   ${isActiveLink(href)
-//                     ? "text-white font-bold text-base border-b-2 border-[#AD1AAF] pb-1"
-//                     : "text-gray-200 hover:text-white"}`}
-//               >
-//                 {label}
-//               </Link>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* Right side buttons */}
-//         <div className="flex items-center gap-4">
-//           <div className="flex items-center">
-//             <div className="shape-container">
-//               <div className="right-bar" />
-//             </div>
-//             <button className="relative mx-1 bg-[#AD1AAF] text-white px-6 py-3 text-lg font-medium transition-all hover:bg-[#8c158e] hover:shadow-lg hover-shake h-[55px]">
-//               <div className="first-bar" />
-//               <span className="relative z-10 font-oxanium">Connect Wallet</span>
-//               <div className="last-bar" />
-//             </button>
-//             <div className="shape-container">
-//               <div className="right-bar" />
-//             </div>
-//           </div>
-//           <Link href="/profile">
-//             <UserCircle className="h-10 w-10 text-gray-400 hover:text-white transition-colors duration-200" />
-//           </Link>
-//         </div>
-//       </div>
-//     </nav>
-//   );
-// }
-
 
 "use client";
 
@@ -98,7 +20,7 @@ export function Navbar() {
     { href: "/dashboard", label: "DASHBOARD" },
     { href: "/markets", label: "MARKETS" },
     { href: "/portfolio", label: "PORTFOLIO" },
-    { href: "/NFTMarket", label: "NFT MARKETPLACE" },
+    { href: "/leaderboard", label: "LEADERBOARD" },
     { href: "/proposals", label: "CREATE MARKET" }
   ];
 
@@ -169,12 +91,12 @@ export function Navbar() {
               <div className="right-bar" />
             </div>
           </div>
-          <Link 
+          {/* <Link 
             href="/profile"
             className="transition-transform duration-200 hover:scale-110"
           >
             <UserCircle className="h-8 w-8 xl:h-10 xl:w-10 text-gray-400 hover:text-white transition-colors" />
-          </Link>
+          </Link> */}
         </div>
 
         {/* Mobile Navigation Menu */}

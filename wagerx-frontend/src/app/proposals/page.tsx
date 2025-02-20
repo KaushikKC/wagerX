@@ -4,7 +4,6 @@ import { ClosedProposalCard } from "@/components/closed-proposal-card";
 import { Layout } from "@/components/layout";
 import MarketProposalModal from "@/components/marketProposalModel";
 import { ProposalCard } from "@/components/proposal-card";
-import Chatbot from "@/components/ui/ChatBot";
 import React, { useState } from "react";
 
 function Proposals() {
@@ -26,8 +25,9 @@ function Proposals() {
           <div className="last-purple-bar" />
         </div>
         {/* Render Modal */}
-        {isModalOpen &&
-          <MarketProposalModal onClose={() => setIsModalOpen(false)} />}
+        {isModalOpen && (
+          <MarketProposalModal onClose={() => setIsModalOpen(false)} />
+        )}
         <div className="mx-[50px]">
           <p className="font-oxanium text-white text-[30px]">
             Active Proposals
@@ -83,7 +83,6 @@ function Proposals() {
           </div>
         </div>
       </section>
-      <Chatbot />
     </Layout>
   );
 }

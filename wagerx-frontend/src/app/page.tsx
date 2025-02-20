@@ -6,7 +6,7 @@ import { Layout } from "@/components/layout";
 import { Wallet, Box, Target, BarChart3 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import bgPattern from "@/app/images/pattern.svg";
 
 const useScrollAnimation = () => {
@@ -61,7 +61,7 @@ export default function LandingPage() {
         ${isLoaded ? "opacity-20 scale-100" : "opacity-0 scale-110"}`}
               style={{
                 filter: "blur(0.5px)",
-                objectFit: "repeat",
+                objectFit: "cover",
                 transform: `perspective(1000px) ${
                   isLoaded ? "rotateX(0deg)" : "rotateX(-5deg)"
                 }`,

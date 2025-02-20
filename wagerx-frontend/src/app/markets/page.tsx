@@ -14,7 +14,7 @@ const categories = [
   "Create",
   "Create",
   "Create",
-  "Create"
+  "Create",
 ];
 
 export default function MarketsPage() {
@@ -31,8 +31,8 @@ export default function MarketsPage() {
         </div>
 
         <div className="flex w-full justify-between gap-6 overflow-x-auto pb-2">
-          {categories.map(category =>
-            <div className="flex items-center">
+          {categories.map((category, index) => (
+            <div key={`${category}-${index}`} className="flex items-center">
               <div className="first-purple-bar" />
               <Button
                 key={category}
@@ -43,14 +43,14 @@ export default function MarketsPage() {
               </Button>
               <div className="last-purple-bar" />
             </div>
-          )}
+          ))}
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <div
             className="absolute inset-[220px] bg-cover bg-center h-screen"
             style={{
-              backgroundImage: "url('/images/Vector-1.png')"
+              backgroundImage: "url('/images/Vector-1.png')",
             }}
           />
           <MarketCard

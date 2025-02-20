@@ -1,4 +1,4 @@
-module prediction_markets::core {
+module prediction_markets ::core {
     use std::signer;
     use std::vector;
     use aptos_framework::coin;

@@ -110,7 +110,7 @@ export default function LandingPage() {
     style={{ transitionDelay: '400ms' }}
   >
     <div className="flex items-center justify-center">
-      <div className="shape-container animate-slide-right">
+      <div className="shape-container animate-slide-right ">
         <div className="right-bar" />
       </div>
       <Link
@@ -118,7 +118,7 @@ export default function LandingPage() {
         className="group relative mx-1 bg-[#AD1AAF] text-white px-4 sm:px-6 py-3 
           text-base sm:text-lg font-medium overflow-hidden 
           transition-all duration-500 hover:shadow-[0_0_30px_rgba(173,26,175,0.5)]
-          hover:scale-105 transform-gpu"
+          hover:scale-105 transform-gpu "
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#AD1AAF] to-[#8c158e] opacity-0 
           group-hover:opacity-100 transition-all duration-500" />

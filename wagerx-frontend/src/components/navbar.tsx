@@ -17,7 +17,6 @@ export function Navbar() {
   }, [pathname]);
 
   const navLinks = [
-    { href: "/dashboard", label: "DASHBOARD" },
     { href: "/markets", label: "MARKETS" },
     { href: "/portfolio", label: "PORTFOLIO" },
     { href: "/leaderboard", label: "LEADERBOARD" },

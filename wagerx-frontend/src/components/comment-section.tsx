@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
-import user from "@/images/User.png";
+import user from "@/app/images/User.png";
 
 export function CommentSection() {
   return (

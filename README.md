@@ -136,5 +136,4 @@ This project is **open-source** under the **MIT License**.
 
 ---
 
-🔥 Built for **[Hackathon Name]**, pushing the boundaries of **on-chain social betting**! 🚀
 

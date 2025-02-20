@@ -2,7 +2,7 @@ import { Layout } from "@/components/layout";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import React from "react";
-import wave from "@/images/wave.png";
+import wave from "@/app/images/wave.png";
 import Link from "next/link";
 
 function OnboardingPage() {
@@ -36,7 +36,7 @@ function OnboardingPage() {
         <div
           className="absolute  inset-[0px] top-[150px]  left-[-250px] bg-no-repeat  h-[500px]  opacity-90"
           style={{
-            backgroundImage: "url('/images/Vector-1.png')"
+            backgroundImage: "url('/images/Vector-1.png')",
           }}
         />
         <div className="mt-[80px]">

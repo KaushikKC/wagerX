@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import wave from "@/app/images/wave.png";
+import Footer from "@/components/footer";
 
 function Profile() {
   return (
@@ -59,7 +60,7 @@ function Profile() {
         <div
           className="absolute  inset-[0px] top-[150px]  left-[-250px] bg-no-repeat  h-[500px]  opacity-90"
           style={{
-            backgroundImage: "url('/images/Vector-1.png')",
+            backgroundImage: "url('/images/Vector-1.png')"
           }}
         />
         <div className="mt-[80px]">
@@ -83,6 +84,7 @@ function Profile() {
         </div>
         <Image src={wave} className="w-full" alt="" />
       </section>
+      <Footer />
     </Layout>
   );
 }

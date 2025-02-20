@@ -3,6 +3,7 @@ import { CommentSection } from "@/components/comment-section";
 import Image from "next/image";
 import img from "@/app/images/detail.png";
 import { Bookmark, MessageCircle } from "lucide-react";
+import Footer from "@/components/footer";
 
 export default function ProposalDetailsPage() {
   return (
@@ -72,7 +73,7 @@ export default function ProposalDetailsPage() {
             <div
               className="absolute   inset-[0px] top-[300px]  left-[-250px] bg-no-repeat  h-[500px]  opacity-90"
               style={{
-                backgroundImage: "url('/images/Vector-1.png')",
+                backgroundImage: "url('/images/Vector-1.png')"
               }}
             />
             <h3 className="text-xl font-bold text-white font-oxanium">ABOUT</h3>
@@ -130,6 +131,7 @@ export default function ProposalDetailsPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </Layout>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { ClosedProposalCard } from "@/components/closed-proposal-card";
+import Footer from "@/components/footer";
 import { Layout } from "@/components/layout";
 import MarketProposalModal from "@/components/marketProposalModel";
 import { ProposalCard } from "@/components/proposal-card";
@@ -25,9 +26,8 @@ function Proposals() {
           <div className="last-purple-bar" />
         </div>
         {/* Render Modal */}
-        {isModalOpen && (
-          <MarketProposalModal onClose={() => setIsModalOpen(false)} />
-        )}
+        {isModalOpen &&
+          <MarketProposalModal onClose={() => setIsModalOpen(false)} />}
         <div className="mx-[50px]">
           <p className="font-oxanium text-white text-[30px]">
             Active Proposals
@@ -83,6 +83,7 @@ function Proposals() {
           </div>
         </div>
       </section>
+      <Footer />
     </Layout>
   );
 }

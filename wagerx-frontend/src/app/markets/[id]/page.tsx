@@ -1,11 +1,12 @@
 import { Layout } from "@/components/layout";
-// import { MarketChart } from "@/components/market-chart";
-// import { BetCard } from "@/components/bet-card";
-// import { TokenizationSteps } from "@/components/tokenization-steps";
+import { MarketChart } from "@/components/market-chart";
+import { BetCard } from "@/components/bet-card";
+import { TokenizationSteps } from "@/components/tokenization-steps";
 import { CommentSection } from "@/components/comment-section";
 import Image from "next/image";
 import img from "@/app/images/detail.png";
 import { Bookmark, MessageCircle } from "lucide-react";
+import Footer from "@/components/footer";
 
 export default function MarketDetailsPage() {
   return (
@@ -68,15 +69,16 @@ export default function MarketDetailsPage() {
                 backgroundImage: "url('/images/Vector-1.png')"
               }}
             />
-            {/* <MarketChart />
-            <TokenizationSteps /> */}
+            <MarketChart />
+            <TokenizationSteps />
             <CommentSection />
           </div>
           <div className="space-y-8">
-            {/* <BetCard /> */}
+            <BetCard />
           </div>
         </div>
       </div>
+      <Footer />
     </Layout>
   );
 }

@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import { Layout } from "@/components/layout";
 import { MarketCard } from "@/components/market-card";
 // import NFTCard from "@/components/NFTCard";
@@ -55,6 +56,7 @@ function Portfolio() {
           </div>
         </div> */}
       </div>
+      <Footer />
     </Layout>
   );
 }

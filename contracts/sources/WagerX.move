@@ -61,7 +61,7 @@ module prediction_markets ::wagerx_core {
         
 
         //creates a struct for the number of outcome the user wishes for to track them separately
-        //note : 0 should not be entered.
+        //note : 0 should not be entered
         let outcomes = vector::empty<Outcome>();
         let i = 0;
         while (i < outcomes_count) {

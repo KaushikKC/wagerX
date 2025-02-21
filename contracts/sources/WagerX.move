@@ -1,4 +1,4 @@
-module prediction_markets ::core {
+module prediction_markets ::wagerx_core {
     use std::signer;
     use std::vector;
     use aptos_framework::coin;
@@ -59,6 +59,9 @@ module prediction_markets ::core {
         let creator_addr = signer::address_of(creator);
         let current_time = timestamp::now_seconds();
         
+
+        //creates a struct for the number of outcome the user wishes for to track them separately
+        //note : 0 should not be entered.
         let outcomes = vector::empty<Outcome>();
         let i = 0;
         while (i < outcomes_count) {

@@ -1,14 +1,17 @@
 [package]
-name = "./"
-version = "2.0.0"
+name = "betting_contract"
+version = "1.0.0"
 authors = []
 
 [addresses]
 wager_x = "0x959c820a4ba94ab3065b416fc354a87867fb08818dc35b738a59475361265505"
+betting_contract = "_"
 
 [dev-addresses]
+betting_contract = "0x42"
 
 [dependencies.AptosFramework]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework/", rev = "main" }
 git = "https://github.com/aptos-labs/aptos-core.git"
 rev = "testnet"
 subdir = "aptos-move/framework/aptos-framework"

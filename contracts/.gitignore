@@ -1,0 +1,18 @@
+# Build artifacts
+build/
+*.mv
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Aptos CLI files
+.aptos/
+
+# Dependencies
+node_modules/
+
+# Environment files
+.env

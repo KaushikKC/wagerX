@@ -5,44 +5,51 @@ const userSchema = new mongoose.Schema(
     walletAddress: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
     },
     username: {
       type: String,
-      default: "Anon",
+      default: "Anon"
     },
     totalBets: {
       type: Number,
-      default: 0,
+      default: 0
     },
     winningBets: {
       type: Number,
-      default: 0,
+      default: 0
     },
     totalWinnings: {
       type: Number,
-      default: 0,
+      default: 0
     },
-    groups: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Group",
-      },
-    ],
+    riskTolerance: {
+      type: Number,
+      default: 5
+    },
+    leverage: {
+      type: Number,
+      default: 1
+    },
+    aiAutomation: {
+      type: Boolean,
+      default: false
+    },
+
     bettingHistory: [
       {
         market: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Market",
+          ref: "Market"
         },
         amount: Number,
         outcome: String,
         timestamp: {
           type: Date,
-          default: Date.now,
-        },
-      },
-    ],
+          default: Date.now
+        }
+      }
+    ]
   },
   { timestamps: true }
 );

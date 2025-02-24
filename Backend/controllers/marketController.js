@@ -1,26 +1,62 @@
+const axios = require("axios");
 const Market = require("../models/Market");
-
-const { WebSocketServer } = require("../utils/websocket");
+const Bet = require("../models/Bet");
+const User = require("../models/User");
+const WebSocketServer = require("../utils/websocket").getInstance();
 
 exports.createMarket = async (req, res) => {
   try {
     const { title, description, creator, endDate, options } = req.body;
 
+    let user = await User.findOne({ walletAddress: creator });
+    if (!user) {
+      user = new User({ walletAddress: creator });
+      await user.save();
+    }
+
     const market = new Market({
       title,
       description,
-      creator,
+      creator: user._id,
       endDate,
       options,
       status: "active",
-      totalPool: 0,
+      totalPool: 0
     });
 
     await market.save();
-    WebSocketServer.broadcast("NEW_MARKET", { market });
-    res.json(market);
+
+    const populatedMarket = await Market.findById(market._id).populate(
+      "creator"
+    );
+
+    if (WebSocketServer) {
+      WebSocketServer.broadcast("NEW_MARKET", {
+        market: {
+          ...populatedMarket.toObject(),
+          marketId: market._id
+        }
+      });
+    } else {
+      console.warn(
+        "WebSocketServer instance is not available; skipping broadcast"
+      );
+    }
+
+    res.json({
+      success: true,
+      market: {
+        ...populatedMarket.toObject(),
+        marketId: market._id
+      }
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error creating market", error });
+    console.error("Market creation error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error creating market",
+      error: error.message
+    });
   }
 };
 
@@ -37,7 +73,6 @@ exports.settleMarket = async (req, res) => {
     market.status = "completed";
     market.winningOption = winningOption;
 
-    // Calculate and distribute winnings
     const winningBets = market.bets.filter(
       (bet) => bet.option === winningOption
     );
@@ -50,30 +85,75 @@ exports.settleMarket = async (req, res) => {
       const winningAmount = (bet.amount / totalWinningBets) * market.totalPool;
       await bet.user.updateStats({
         won: true,
-        amount: winningAmount,
+        amount: winningAmount
       });
     }
 
     await market.save();
+    if (WebSocketServer) {
+      WebSocketServer.broadcast("MARKET_SETTLED", {
+        marketId,
+        winningOption,
+        totalPool: market.totalPool
+      });
+    }
 
-    // Broadcast market settlement
-    WebSocketServer.broadcast("MARKET_SETTLED", {
-      marketId,
-      winningOption,
-      totalPool: market.totalPool,
+    res.json({
+      success: true,
+      message: "Market settled successfully",
+      marketId: market._id
     });
-
-    res.json({ message: "Market settled successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error settling market", error });
+    res.status(500).json({
+      success: false,
+      message: "Error settling market",
+      error: error.message
+    });
   }
 };
 
 exports.listMarkets = async (req, res) => {
   try {
-    const markets = await Market.find().populate("creator");
-    res.json(markets);
+    const markets = await Market.find()
+      .populate("creator")
+      .select("-__v")
+      .lean();
+
+    const marketsWithId = markets.map((market) => ({
+      ...market,
+      marketId: market._id
+    }));
+
+    res.json({
+      success: true,
+      markets: marketsWithId
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error fetching markets", error });
+    res.status(500).json({
+      success: false,
+      message: "Error fetching markets",
+      error: error.message
+    });
+  }
+};
+
+// cross check with url, I hv added dummy url as of now
+exports.fetchMarketData = async (req, res) => {
+  try {
+    const response = await axios.get(process.env.KANA_API_URL);
+    const data = response.data;
+
+    res.status(200).json({
+      success: true,
+      data,
+      message: "Market data fetched successfully"
+    });
+  } catch (error) {
+    console.error("Fetch Market Data error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching market data",
+      details: error.message
+    });
   }
 };

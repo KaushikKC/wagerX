@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pythnetwork/client": "^2.22.1",
+    "@pythnetwork/hermes-client": "^2.0.0",
     "@pythnetwork/pyth-evm-js": "^1.83.0",
     "axios": "^1.7.9",
     "cors": "^2.8.5",

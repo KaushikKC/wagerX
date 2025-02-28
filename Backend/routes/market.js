@@ -1,12 +1,11 @@
 const express = require("express");
 const Market = require("../models/Market");
 const router = express.Router();
-const settlementController = require("../controllers/MarketSettlementController");
 const {
   createMarket,
   settleMarket,
   listMarkets,
-  fetchMarketData
+  fetchMarketData,
 } = require("../controllers/marketController");
 
 router.post("/create", createMarket);

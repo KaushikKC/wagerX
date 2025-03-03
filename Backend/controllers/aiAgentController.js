@@ -108,11 +108,35 @@ exports.agentMutlisigExecution = async (req, res) => {
     if (!privateKey) {
       return res.status(400).json({ error: "Private key is required" });
     }
-    // Find the user's AI agent
+    // Find the user's AI agent from the private_key given by the user which we store in db and fetch here to get the address
+    const agent_account = Account.fromPrivateKey({ privateKey });
+    console.log("Account from private-key:", account);
+
     // Store the private key securely
     // Note: In a production environment, you should encrypt this key before storing
     // You might want to set a flag indicating the private key has been provided
     // Save the updated agent
+
+    //Owner address from DB only to the respective AGENT address from the private-key
+    const ownerAddress =
+      "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905";
+    console.log(ownerAddress, "OwnerAddress");
+
+    const config = new AptosConfig({ network: Network.DEVNET });
+    const aptos = new Aptos(config);
+
+    // Build the transaction
+    const transaction = await aptos.transaction.build.multiAgent({
+      sender: agent_account,
+      secondarySignerAddresses: [ownerAddress],
+      data: {
+        // REPLACE WITH YOUR MULTI-AGENT FUNCTION HERE
+        function:
+          "<REPLACE WITH YOUR MULTI AGENT MOVE ENTRY FUNCTION> (Syntax {address}::{module}::{function})",
+        functionArguments: [],
+      },
+    });
+    console.log("Transaction:", transaction);
 
     res.status(200).json({
       success: true,

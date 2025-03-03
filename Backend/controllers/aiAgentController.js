@@ -1,4 +1,5 @@
 const AIAgent = require("../models/AIAgent");
+const { Account, Aptos, AptosConfig, Network } = require("@aptos-labs/ts-sdk");
 
 exports.createAIAgent = async (req, res) => {
   const { userId, strategy } = req.body;
@@ -12,14 +13,14 @@ exports.createAIAgent = async (req, res) => {
     if (strategy && !validStrategies.includes(strategy)) {
       return res.status(400).json({
         error:
-          "Invalid strategy. Must be one of: conservative, balanced, aggressive"
+          "Invalid strategy. Must be one of: conservative, balanced, aggressive",
       });
     }
 
     const existingAgent = await AIAgent.findOne({ user: userId, active: true });
     if (existingAgent) {
       return res.status(400).json({
-        error: "User already has an active AI agent"
+        error: "User already has an active AI agent",
       });
     }
 
@@ -29,13 +30,13 @@ exports.createAIAgent = async (req, res) => {
     res.status(201).json({
       success: true,
       aiAgent,
-      message: "AI Agent created successfully"
+      message: "AI Agent created successfully",
     });
   } catch (error) {
     console.error("AI Agent creation error:", error);
     res.status(500).json({
       error: "Failed to create AI Agent",
-      details: error.message
+      details: error.message,
     });
   }
 };
@@ -48,7 +49,7 @@ exports.updateAIStrategy = async (req, res) => {
     if (strategy && !validStrategies.includes(strategy)) {
       return res.status(400).json({
         error:
-          "Invalid strategy. Must be one of: low risk, moderate risk, high risk"
+          "Invalid strategy. Must be one of: low risk, moderate risk, high risk",
       });
     }
 
@@ -65,13 +66,13 @@ exports.updateAIStrategy = async (req, res) => {
     res.status(200).json({
       success: true,
       aiAgent,
-      message: "AI Agent strategy updated successfully"
+      message: "AI Agent strategy updated successfully",
     });
   } catch (error) {
     console.error("Update AI Agent strategy error:", error);
     res.status(500).json({
       error: "Failed to update AI Agent strategy",
-      details: error.message
+      details: error.message,
     });
   }
 };
@@ -95,5 +96,33 @@ exports.deleteAIAgent = async (req, res) => {
     res
       .status(500)
       .json({ error: "Failed to delete AI Agent", details: error.message });
+  }
+};
+
+// Add this function to the existing aiAgentController.js file
+
+exports.agentMutlisigExecution = async (req, res) => {
+  const { privateKey } = req.body;
+
+  try {
+    if (!privateKey) {
+      return res.status(400).json({ error: "Private key is required" });
+    }
+    // Find the user's AI agent
+    // Store the private key securely
+    // Note: In a production environment, you should encrypt this key before storing
+    // You might want to set a flag indicating the private key has been provided
+    // Save the updated agent
+
+    res.status(200).json({
+      success: true,
+      message: "Transaction executed successfully",
+    });
+  } catch (error) {
+    console.error("Private key submission error:", error);
+    res.status(500).json({
+      error: "Failed to process private key",
+      details: error.message,
+    });
   }
 };

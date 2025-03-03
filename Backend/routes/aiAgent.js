@@ -2,7 +2,8 @@ const express = require("express");
 const {
   createAIAgent,
   updateAIStrategy,
-  deleteAIAgent
+  deleteAIAgent,
+  agentMutlisigExecution,
 } = require("../controllers/aiAgentController");
 
 const router = express.Router();
@@ -10,4 +11,6 @@ const router = express.Router();
 router.post("/create", createAIAgent);
 router.put("/updateAI", updateAIStrategy);
 router.delete("/:agentId", deleteAIAgent);
+router.post("/agent-multisig-execution", agentMutlisigExecution);
+
 module.exports = router;

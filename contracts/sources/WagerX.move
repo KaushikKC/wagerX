@@ -1,4 +1,4 @@
-module betting_contract::bet_nft {
+module betting_contract::bet_nft_v2 {
     use std::error;
     use std::signer;
     use std::string::{Self, String};
@@ -281,12 +281,12 @@ module betting_contract::bet_nft {
         let betting_contract = borrow_global_mut<BettingContract>(@betting_contract);
         
         // Verify agent is authorized
-assert!(
-    table::contains(&betting_contract.authorized_agents, owner_addr) && 
-    table::contains(table::borrow(&betting_contract.authorized_agents, owner_addr), agent_addr) &&
-    table::borrow(table::borrow(&betting_contract.authorized_agents, owner_addr), agent_addr).is_authorized,
-    EUNAUTHORIZED_AGENT
-);
+        assert!(
+            table::contains(&betting_contract.authorized_agents, owner_addr) && 
+            table::contains(table::borrow(&betting_contract.authorized_agents, owner_addr), agent_addr) &&
+            table::borrow(table::borrow(&betting_contract.authorized_agents, owner_addr), agent_addr).is_authorized,
+            EUNAUTHORIZED_AGENT
+        );
 
         // Other validations
         assert!(expiry_timestamp > timestamp::now_seconds(), EBET_EXPIRED);

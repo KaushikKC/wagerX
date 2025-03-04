@@ -185,7 +185,7 @@ exports.agentMutlisigExecution = async (req, res) => {
 
       secondarySignerAddresses: [owner_account.accountAddress],
       data: {
-        function: `${contractAddress}::bet_nft::place_bet`,
+        function: `${contractAddress}::bet_nft_v2::place_bet_with_agent`,
         functionArguments: [
           marketId, // market_id: u64
           amount, // amount: u64

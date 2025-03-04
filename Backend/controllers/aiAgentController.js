@@ -6,6 +6,7 @@ const {
   AptosAccount,
   Network,
   Ed25519PrivateKey,
+  EntryFunction,
 } = require("@aptos-labs/ts-sdk");
 
 exports.createAIAgent = async (req, res) => {
@@ -106,7 +107,105 @@ exports.deleteAIAgent = async (req, res) => {
   }
 };
 
-// Add this function to the existing aiAgentController.js file
+exports.authorizeAgent = async (req, res) => {
+  const {
+    ownerAddress,
+    agentAddress,
+    isAuthorized = true,
+    privateKey,
+  } = req.body;
+
+  try {
+    // Validate required fields
+    if (!ownerAddress || !agentAddress || !privateKey) {
+      return res.status(400).json({
+        error: "Owner address, agent address, and private key are required",
+      });
+    }
+
+    // Initialize Aptos client
+    const config = new AptosConfig({ network: Network.DEVNET }); // Change to MAINNET for production
+    const aptos = new Aptos(config);
+
+    const ownerPrivateKeyObj = new Ed25519PrivateKey(
+      Buffer.from(privateKey, "hex")
+    );
+
+    // Create account from private key
+    const owner_account = Account.fromPrivateKey({
+      privateKey: ownerPrivateKeyObj,
+    });
+
+    console.log(owner_account.accountAddress.toString(), "owner_account");
+    // Verify that the derived address matches the provided owner address
+
+    const contractAddress =
+      "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905";
+    // Build the transaction
+    const transaction = await aptos.transaction.build.simple({
+      sender: owner_account.accountAddress,
+      data: {
+        function: `${contractAddress}::bet_nft_v2::authorize_agent`,
+        functionArguments: [
+          agentAddress, // agent_addr: address
+          isAuthorized, // is_authorized: bool
+        ],
+      },
+    });
+    console.log("Transaction built successfully");
+
+    // 3. Sign
+    console.log("\n=== 3. Signing transaction ===\n");
+    const senderAuthenticator = aptos.transaction.sign({
+      signer: owner_account,
+      transaction,
+    });
+    console.log("Signed the transaction!");
+
+    // 4. Submit
+    console.log("\n=== 4. Submitting transaction ===\n");
+    const submittedTransaction = await aptos.transaction.submit.simple({
+      transaction,
+      senderAuthenticator,
+    });
+
+    console.log(`Submitted transaction hash: ${submittedTransaction.hash}`);
+
+    // 5. Wait for results
+    console.log("\n=== 5. Waiting for result of transaction ===\n");
+    const executedTransaction = await aptos.waitForTransaction({
+      transactionHash: submittedTransaction.hash,
+    });
+    console.log(executedTransaction);
+
+    // Update the agent record in the database if needed
+    // This is optional and depends on your application's requirements
+    // const aiAgent = await AIAgent.findOne({
+    //   agentAddress: agentAddress.toLowerCase(),
+    //   active: true,
+    // });
+
+    // if (aiAgent) {
+    //   aiAgent.isAuthorized = isAuthorized;
+    //   await aiAgent.save();
+    // }
+
+    res.status(200).json({
+      success: true,
+      transactionHash: transaction.hash,
+      message: `Agent ${
+        isAuthorized ? "authorized" : "deauthorized"
+      } successfully`,
+      executedTransaction,
+    });
+  } catch (error) {
+    console.error("Agent authorization error:", error);
+    res.status(500).json({
+      error: "Failed to authorize agent",
+      details: error.message,
+    });
+  }
+};
 
 exports.agentMutlisigExecution = async (req, res) => {
   const {

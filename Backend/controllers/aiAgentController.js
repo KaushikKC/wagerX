@@ -1,5 +1,11 @@
 const AIAgent = require("../models/AIAgent");
-const { Account, Aptos, AptosConfig, Network } = require("@aptos-labs/ts-sdk");
+const {
+  Account,
+  Aptos,
+  AptosConfig,
+  AptosAccount,
+  Network,
+} = require("@aptos-labs/ts-sdk");
 
 exports.createAIAgent = async (req, res) => {
   const { userId, strategy } = req.body;
@@ -113,13 +119,6 @@ exports.agentMutlisigExecution = async (req, res) => {
   } = req.body;
 
   try {
-    // Validate required parameters
-    if (!agentPrivateKey || !ownerPrivateKey) {
-      return res
-        .status(400)
-        .json({ error: "Both agent and owner private keys are required" });
-    }
-
     if (
       !marketId ||
       !amount ||
@@ -141,8 +140,10 @@ exports.agentMutlisigExecution = async (req, res) => {
     const owner_account =
       "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905";
 
-    console.log("Agent account address:", agent_account.accountAddress);
-    console.log("Owner account address:", owner_account.accountAddress);
+    // console.log("Agent account address:", agent_account.accountAddress);
+    // console.log("Owner account address:", owner_account.accountAddress);
+
+    console.log;
 
     const config = new AptosConfig({ network: Network.DEVNET });
     const aptos = new Aptos(config);
@@ -151,10 +152,14 @@ exports.agentMutlisigExecution = async (req, res) => {
     const contractAddress =
       "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905";
 
+    console.log(contractAddress, "contractAddress");
+
     // Build the transaction
     const transaction = await aptos.transaction.build.multiAgent({
-      sender: agent_account.accountAddress,
-      secondarySignerAddresses: [owner_account.accountAddress],
+      // sender: agent_account.accountAddress,
+      sender: agent_account,
+
+      secondarySignerAddresses: [owner_account],
       data: {
         function: `${contractAddress}::bet_nft::place_bet`,
         functionArguments: [
@@ -170,10 +175,13 @@ exports.agentMutlisigExecution = async (req, res) => {
     console.log("Transaction built successfully");
 
     // Sign the transaction with both accounts
+
     const agentAuthenticator = aptos.transaction.sign({
-      signer: agent_account,
+      signer: agent_signer,
       transaction,
     });
+
+    console.log(agentAuthenticator, "agentAuth success after build");
 
     const ownerAuthenticator = aptos.transaction.sign({
       signer: owner_account,

@@ -5,6 +5,7 @@ const {
   AptosConfig,
   AptosAccount,
   Network,
+  Ed25519PrivateKey,
 } = require("@aptos-labs/ts-sdk");
 
 exports.createAIAgent = async (req, res) => {
@@ -132,18 +133,41 @@ exports.agentMutlisigExecution = async (req, res) => {
       });
     }
 
-    // const agent_account = Account.fromPrivateKey(agentPrivateKey);
-    // const owner_account = Account.fromPrivateKey(ownerPrivateKey);
+    console.log("Agent private key:", agentPrivateKey);
 
-    const agent_account =
-      "913c78f117f734c9e38fd9804720d5219e2c26996eed3bfde387db46d64efd8d";
-    const owner_account =
-      "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905";
+    // Create proper Ed25519PrivateKey objects from the hex strings
+    const agentPrivateKeyObj = new Ed25519PrivateKey(
+      Buffer.from(agentPrivateKey, "hex")
+    );
+
+    const ownerPrivateKeyObj = new Ed25519PrivateKey(
+      Buffer.from(ownerPrivateKey, "hex")
+    );
+
+    // Create account objects from private keys
+    const agent_account = Account.fromPrivateKey({
+      privateKey: agentPrivateKeyObj,
+    });
+
+    const owner_account = Account.fromPrivateKey({
+      privateKey: ownerPrivateKeyObj,
+    });
+
+    console.log(
+      "Agent account address:",
+      agent_account.accountAddress.toString()
+    );
+    console.log(
+      "Owner account address:",
+      owner_account.accountAddress.toString()
+    );
+    // const agent_account =
+    //   "913c78f117f734c9e38fd9804720d5219e2c26996eed3bfde387db46d64efd8d";
+    // const owner_account =
+    //   "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905";
 
     // console.log("Agent account address:", agent_account.accountAddress);
     // console.log("Owner account address:", owner_account.accountAddress);
-
-    console.log;
 
     const config = new AptosConfig({ network: Network.DEVNET });
     const aptos = new Aptos(config);
@@ -157,9 +181,9 @@ exports.agentMutlisigExecution = async (req, res) => {
     // Build the transaction
     const transaction = await aptos.transaction.build.multiAgent({
       // sender: agent_account.accountAddress,
-      sender: agent_account,
+      sender: agent_account.accountAddress,
 
-      secondarySignerAddresses: [owner_account],
+      secondarySignerAddresses: [owner_account.accountAddress],
       data: {
         function: `${contractAddress}::bet_nft::place_bet`,
         functionArguments: [
@@ -177,7 +201,7 @@ exports.agentMutlisigExecution = async (req, res) => {
     // Sign the transaction with both accounts
 
     const agentAuthenticator = aptos.transaction.sign({
-      signer: agent_signer,
+      signer: agent_account,
       transaction,
     });
 

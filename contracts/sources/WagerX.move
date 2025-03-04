@@ -19,6 +19,8 @@ module betting_contract::bet_nft {
     const EINVALID_NFT: u64 = 0x10008;
     const EINVALID_MARKET: u64 = 0x10009;
     const EINVALID_ODDS: u64 = 0x1000A;
+    const EUNAUTHORIZED_AGENT: u64 = 0x1000B; // New error code for unauthorized agents
+
 
     // Bet status
     const BET_STATUS_ACTIVE: u8 = 0;
@@ -94,6 +96,21 @@ module betting_contract::bet_nft {
         bet_placed_events: EventHandle<BetPlacedEvent>,
         bet_settled_events: EventHandle<BetSettledEvent>,
         nft_minted_events: EventHandle<NFTMintedEvent>,
+        // New field to track authorized agents for each user
+        authorized_agents: Table<address, Table<address, AuthorizedAgent>>,
+        agent_authorized_events: EventHandle<AgentAuthorizedEvent>,
+    }
+
+    struct AgentAuthorizedEvent has drop, store {
+        owner: address,
+        agent: address,
+        is_authorized: bool,
+
+    }
+
+        // New struct to track authorized agents
+    struct AuthorizedAgent has store {
+        is_authorized: bool,
     }
 
    public fun init_betting_contract(account: &signer) acquires BettingContract {
@@ -109,6 +126,8 @@ module betting_contract::bet_nft {
                 bet_placed_events: account::new_event_handle<BetPlacedEvent>(account),
                 bet_settled_events: account::new_event_handle<BetSettledEvent>(account),
                 nft_minted_events: account::new_event_handle<NFTMintedEvent>(account),
+                 authorized_agents: table::new(),
+                agent_authorized_events: account::new_event_handle<AgentAuthorizedEvent>(account),
             });
             
             // Initialize first market
@@ -142,6 +161,9 @@ module betting_contract::bet_nft {
             bet_placed_events: account::new_event_handle<BetPlacedEvent>(account),
             bet_settled_events: account::new_event_handle<BetSettledEvent>(account),
             nft_minted_events: account::new_event_handle<NFTMintedEvent>(account),
+             authorized_agents: table::new(),
+            agent_authorized_events: account::new_event_handle<AgentAuthorizedEvent>(account),
+    
         });
     }
 
@@ -237,6 +259,133 @@ module betting_contract::bet_nft {
             odds,
         });
     }
+
+        // Multi-signer version - agent places bet on behalf of the owner
+    public entry fun place_bet_with_agent(
+        agent: &signer,
+        owner: &signer,
+        market_id: u64,
+        amount: u64,
+        predicted_outcome: u8,
+        odds: u64,
+        expiry_timestamp: u64,
+    ) acquires BettingContract {
+        let agent_addr = signer::address_of(agent);
+        let owner_addr = signer::address_of(owner);
+        
+        // Move amount validation before accessing any resources
+        if (amount == 0) {
+            abort EINVALID_AMOUNT
+        };
+
+        let betting_contract = borrow_global_mut<BettingContract>(@betting_contract);
+        
+        // Verify agent is authorized
+assert!(
+    table::contains(&betting_contract.authorized_agents, owner_addr) && 
+    table::contains(table::borrow(&betting_contract.authorized_agents, owner_addr), agent_addr) &&
+    table::borrow(table::borrow(&betting_contract.authorized_agents, owner_addr), agent_addr).is_authorized,
+    EUNAUTHORIZED_AGENT
+);
+
+        // Other validations
+        assert!(expiry_timestamp > timestamp::now_seconds(), EBET_EXPIRED);
+        assert!(table::contains(&betting_contract.markets, market_id), EINVALID_MARKET);
+        assert!(odds > 0, EINVALID_ODDS);
+
+        // Create and store bet using the owner's address
+        create_and_store_bet(
+            betting_contract,
+            market_id,
+            owner_addr,
+            amount,
+            predicted_outcome,
+            odds,
+            expiry_timestamp
+        );
+    }
+
+
+    fun create_and_store_bet(
+        betting_contract: &mut BettingContract,
+        market_id: u64,
+        user: address,
+        amount: u64,
+        predicted_outcome: u8,
+        odds: u64,
+        expiry_timestamp: u64,
+    ) {
+        // Create new bet
+        let bet_id = betting_contract.bet_count + 1;
+        let bet = Bet {
+            id: bet_id,
+            market_id,
+            user,
+            amount,
+            predicted_outcome,
+            odds,
+            expiry_timestamp,
+            status: BET_STATUS_ACTIVE,
+            risk_level: 0,
+            locked_funds: amount,
+            created_at: timestamp::now_seconds(),
+        };
+
+        // Update user risk profile
+        if (!table::contains(&betting_contract.user_risks, user)) {
+            table::add(&mut betting_contract.user_risks, user, UserRiskProfile {
+                total_exposure: 0,
+                max_risk_limit: 1000000, // Default limit
+            });
+        };
+        let user_risk = table::borrow_mut(&mut betting_contract.user_risks, user);
+        user_risk.total_exposure = user_risk.total_exposure + amount;
+
+        // Store bet and update counter
+        table::add(&mut betting_contract.bets, bet_id, bet);
+        betting_contract.bet_count = bet_id;
+
+        // Emit event
+        event::emit_event(&mut betting_contract.bet_placed_events, BetPlacedEvent {
+            bet_id,
+            market_id,
+            user,
+            amount,
+            odds,
+        });
+    }
+
+     public entry fun authorize_agent(
+        owner: &signer,
+        agent_addr: address,
+        is_authorized: bool
+    ) acquires BettingContract {
+        let owner_addr = signer::address_of(owner);
+        let betting_contract = borrow_global_mut<BettingContract>(@betting_contract);
+        
+        // Initialize the agent table for this owner if it doesn't exist
+        if (!table::contains(&betting_contract.authorized_agents, owner_addr)) {
+            table::add(&mut betting_contract.authorized_agents, owner_addr, table::new<address, AuthorizedAgent>());
+        };
+        
+        let owner_agents = table::borrow_mut(&mut betting_contract.authorized_agents, owner_addr);
+        
+        // Add or update agent authorization
+        if (!table::contains(owner_agents, agent_addr)) {
+            table::add(owner_agents, agent_addr, AuthorizedAgent { is_authorized });
+        } else {
+            let agent = table::borrow_mut(owner_agents, agent_addr);
+            agent.is_authorized = is_authorized;
+        };
+        
+        // Emit event
+        event::emit_event(&mut betting_contract.agent_authorized_events, AgentAuthorizedEvent {
+            owner: owner_addr,
+            agent: agent_addr,
+            is_authorized,
+        });
+    }
+
 
     public fun modify_bet(
         account: &signer,

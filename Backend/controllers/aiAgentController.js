@@ -102,50 +102,112 @@ exports.deleteAIAgent = async (req, res) => {
 // Add this function to the existing aiAgentController.js file
 
 exports.agentMutlisigExecution = async (req, res) => {
-  const { privateKey } = req.body;
+  const {
+    agentPrivateKey,
+    ownerPrivateKey, // For now, we'll get this directly
+    marketId,
+    amount,
+    predictedOutcome,
+    odds,
+    expiryTimestamp,
+  } = req.body;
 
   try {
-    if (!privateKey) {
-      return res.status(400).json({ error: "Private key is required" });
+    // Validate required parameters
+    if (!agentPrivateKey || !ownerPrivateKey) {
+      return res
+        .status(400)
+        .json({ error: "Both agent and owner private keys are required" });
     }
-    // Find the user's AI agent from the private_key given by the user which we store in db and fetch here to get the address
-    const agent_account = Account.fromPrivateKey({ privateKey });
-    console.log("Account from private-key:", account);
 
-    // Store the private key securely
-    // Note: In a production environment, you should encrypt this key before storing
-    // You might want to set a flag indicating the private key has been provided
-    // Save the updated agent
+    if (
+      !marketId ||
+      !amount ||
+      predictedOutcome === undefined ||
+      !odds ||
+      !expiryTimestamp
+    ) {
+      return res.status(400).json({
+        error: "Missing required parameters",
+        required: "marketId, amount, predictedOutcome, odds, expiryTimestamp",
+      });
+    }
 
-    //Owner address from DB only to the respective AGENT address from the private-key
-    const ownerAddress =
-      "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905";
-    console.log(ownerAddress, "OwnerAddress");
+    // Create accounts from private keys
+    const agent_account = Account.fromPrivateKey({
+      privateKey: agentPrivateKey,
+    });
+    const owner_account = Account.fromPrivateKey({
+      privateKey: ownerPrivateKey,
+    });
+
+    console.log("Agent account address:", agent_account.accountAddress);
+    console.log("Owner account address:", owner_account.accountAddress);
 
     const config = new AptosConfig({ network: Network.DEVNET });
     const aptos = new Aptos(config);
 
+    // The address where the betting_contract module is deployed
+    const contractAddress =
+      "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905";
+
     // Build the transaction
     const transaction = await aptos.transaction.build.multiAgent({
-      sender: agent_account,
-      secondarySignerAddresses: [ownerAddress],
+      sender: agent_account.accountAddress,
+      secondarySignerAddresses: [owner_account.accountAddress],
       data: {
-        // REPLACE WITH YOUR MULTI-AGENT FUNCTION HERE
-        function:
-          "<REPLACE WITH YOUR MULTI AGENT MOVE ENTRY FUNCTION> (Syntax {address}::{module}::{function})",
-        functionArguments: [],
+        function: `${contractAddress}::betting_contract::place_bet`,
+        functionArguments: [
+          marketId, // market_id: u64
+          amount, // amount: u64
+          predictedOutcome, // predicted_outcome: u8
+          odds, // odds: u64
+          expiryTimestamp, // expiry_timestamp: u64
+        ],
       },
     });
-    console.log("Transaction:", transaction);
+
+    console.log("Transaction built successfully");
+
+    // Sign the transaction with both accounts
+    const agentAuthenticator = aptos.transaction.sign({
+      signer: agent_account,
+      transaction,
+    });
+
+    const ownerAuthenticator = aptos.transaction.sign({
+      signer: owner_account,
+      transaction,
+    });
+
+    console.log("Transaction signed by both parties");
+
+    // Submit the transaction with both signatures
+    const committedTransaction = await aptos.transaction.submit.multiAgent({
+      transaction,
+      senderAuthenticator: agentAuthenticator,
+      additionalSignersAuthenticators: [ownerAuthenticator],
+    });
+
+    console.log("Transaction submitted:", committedTransaction.hash);
+
+    // Wait for the transaction to be confirmed
+    const executedTransaction = await aptos.waitForTransaction({
+      transactionHash: committedTransaction.hash,
+    });
+
+    console.log("Transaction executed:", executedTransaction);
 
     res.status(200).json({
       success: true,
-      message: "Transaction executed successfully",
+      message: "Bet placed successfully",
+      transactionHash: committedTransaction.hash,
+      transactionDetails: executedTransaction,
     });
   } catch (error) {
-    console.error("Private key submission error:", error);
+    console.error("Transaction execution error:", error);
     res.status(500).json({
-      error: "Failed to process private key",
+      error: "Failed to execute transaction",
       details: error.message,
     });
   }

@@ -3,7 +3,7 @@ name = "betting_contract"
 version = "1.0.0"
 
 [addresses]
-betting_contract = "_"
+betting_contract = "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905"
 
 [dev-addresses]
 betting_contract = "0x42"

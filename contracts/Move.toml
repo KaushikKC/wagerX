@@ -1,5 +1,5 @@
 [package]
-name = "betting_contract_v2"
+name = "betting_contract_v3"
 version = "1.0.0"
 
 [addresses]

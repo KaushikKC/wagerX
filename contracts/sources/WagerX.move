@@ -1,4 +1,4 @@
-module betting_contract::bet_nft_v2 {
+module betting_contract::bet_nft_v3 {
     use std::error;
     use std::signer;
     use std::string::{Self, String};
@@ -290,7 +290,7 @@ module betting_contract::bet_nft_v2 {
 
         // Other validations
         assert!(expiry_timestamp > timestamp::now_seconds(), EBET_EXPIRED);
-        assert!(table::contains(&betting_contract.markets, market_id), EINVALID_MARKET);
+        // assert!(table::contains(&betting_contract.markets, market_id), EINVALID_MARKET);
         assert!(odds > 0, EINVALID_ODDS);
 
         // Create and store bet using the owner's address

@@ -145,7 +145,7 @@ exports.authorizeAgent = async (req, res) => {
     const transaction = await aptos.transaction.build.simple({
       sender: owner_account.accountAddress,
       data: {
-        function: `${contractAddress}::bet_nft_v2::authorize_agent`,
+        function: `${contractAddress}::bet_nft_v3::authorize_agent`,
         functionArguments: [
           agentAddress, // agent_addr: address
           isAuthorized, // is_authorized: bool
@@ -284,7 +284,7 @@ exports.agentMutlisigExecution = async (req, res) => {
 
       secondarySignerAddresses: [owner_account.accountAddress],
       data: {
-        function: `${contractAddress}::bet_nft_v2::place_bet_with_agent`,
+        function: `${contractAddress}::bet_nft_v3::place_bet_with_agent`,
         functionArguments: [
           marketId, // market_id: u64
           amount, // amount: u64

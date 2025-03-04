@@ -176,7 +176,7 @@ module betting_contract::bet_nft {
     }
 
 
-    public fun place_bet(
+    public entry fun place_bet(
         account: &signer,
         market_id: u64,
         amount: u64,

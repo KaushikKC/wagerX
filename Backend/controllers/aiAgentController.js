@@ -133,13 +133,13 @@ exports.agentMutlisigExecution = async (req, res) => {
       });
     }
 
-    // Create accounts from private keys
-    const agent_account = Account.fromPrivateKey({
-      privateKey: agentPrivateKey,
-    });
-    const owner_account = Account.fromPrivateKey({
-      privateKey: ownerPrivateKey,
-    });
+    // const agent_account = Account.fromPrivateKey(agentPrivateKey);
+    // const owner_account = Account.fromPrivateKey(ownerPrivateKey);
+
+    const agent_account =
+      "913c78f117f734c9e38fd9804720d5219e2c26996eed3bfde387db46d64efd8d";
+    const owner_account =
+      "e8570053e69a5fc0ee9d22e42160e072e7ce324c03f2f07c1b10e23eeb4c4905";
 
     console.log("Agent account address:", agent_account.accountAddress);
     console.log("Owner account address:", owner_account.accountAddress);
@@ -156,7 +156,7 @@ exports.agentMutlisigExecution = async (req, res) => {
       sender: agent_account.accountAddress,
       secondarySignerAddresses: [owner_account.accountAddress],
       data: {
-        function: `${contractAddress}::betting_contract::place_bet`,
+        function: `${contractAddress}::bet_nft::place_bet`,
         functionArguments: [
           marketId, // market_id: u64
           amount, // amount: u64

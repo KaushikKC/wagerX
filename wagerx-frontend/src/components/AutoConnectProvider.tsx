@@ -53,7 +53,7 @@ export const AutoConnectProvider: FC<{ children: ReactNode }> = ({
           JSON.stringify(autoConnect)
         );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (typeof window !== "undefined") {
         console.error(error);
       }

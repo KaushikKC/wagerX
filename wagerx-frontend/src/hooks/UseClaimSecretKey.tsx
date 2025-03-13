@@ -6,8 +6,7 @@ import {
   Ed25519PrivateKey,
   Network,
 } from "@aptos-labs/ts-sdk";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 
 const claimSecretKeyStorageKey = "@wallet-adapter-example-dapp/claimSecretKey";

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Oxanium, Lato } from "next/font/google";
 import "./globals.css";
+import { WalletProvider } from "@/components/WalletProvider";
+import { QueryProvider } from "@/components/QueryProvider";
 
 const oxanium = Oxanium({
   subsets: ["latin"],
@@ -28,7 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${oxanium.variable} ${lato.variable} antialiased`}>
-        {children}
+        <QueryProvider>
+          <WalletProvider>{children}</WalletProvider>{" "}
+        </QueryProvider>
       </body>
     </html>
   );

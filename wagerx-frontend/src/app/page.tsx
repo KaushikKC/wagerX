@@ -8,6 +8,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import bgPattern from "@/app/images/pattern.svg";
+// import "./my-style-file.css";
+
+import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
 
 const useScrollAnimation = () => {
   useEffect(() => {

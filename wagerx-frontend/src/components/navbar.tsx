@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -82,7 +83,8 @@ export function Navbar() {
             <div className="shape-container">
               <div className="right-bar" />
             </div>
-            <button
+            <WalletSelector />
+            {/* <button
               className="relative mx-1 bg-[#AD1AAF] text-white px-4 xl:px-6 py-3 text-base xl:text-lg font-medium 
               transition-all duration-300 hover:bg-[#8c158e] hover:shadow-lg hover:scale-105 h-[55px]"
             >
@@ -91,7 +93,7 @@ export function Navbar() {
                 Connect Wallet
               </span>
               <div className="last-bar" />
-            </button>
+            </button> */}
             <div className="shape-container">
               <div className="right-bar" />
             </div>
@@ -130,6 +132,7 @@ export function Navbar() {
                 {label}
               </Link>
             ))}
+            <WalletSelector />
             <button
               className="w-full bg-[#AD1AAF] text-white px-6 py-3 text-base font-medium 
       rounded-lg transition-all duration-300 hover:bg-[#8c158e] hover:shadow-lg 

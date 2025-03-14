@@ -29,6 +29,7 @@ app.use("/api/ai", require("./routes/aiAgent"));
 app.use("/api/market", require("./routes/market"));
 app.use("/api/prediction", require("./routes/prediction"));
 app.use("/api/bet", require("./routes/bet"));
+app.use("/api/oracle", require("./routes/oracle_route/oracle_data_route"));
 
 // Socket.IO events (if needed)
 io.on("connection", (socket) => {

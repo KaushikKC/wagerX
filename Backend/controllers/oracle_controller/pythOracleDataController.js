@@ -14,7 +14,21 @@ async function getLatestPriceUpdates(priceIds) {
     const data = await response.json();
     console.log("Raw API Response:", JSON.stringify(data, null, 2)); // Debugging log
 
-    return data.parsed; // Return only parsed object
+    // Map price IDs to their respective symbols
+    const priceIdToSymbol = {
+      e62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43:
+        "BTC/USD",
+      ff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace:
+        "ETH/USD",
+    };
+
+    // Add symbol information to each price update
+    const enhancedData = data.parsed.map((priceData) => ({
+      ...priceData,
+      symbol: priceIdToSymbol[priceData.id] || "Unknown",
+    }));
+
+    return enhancedData;
   } catch (error) {
     console.error("Error fetching price updates:", error.message);
     throw error;

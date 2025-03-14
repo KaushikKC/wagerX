@@ -562,7 +562,7 @@ exports.monitorAgents = async (req, res) => {
     if (!btcData || !ethData) {
       return res.status(500).json({
         success: false,
-        error: "Failed to retrieve price data for BTC or ETH",
+        error: "Failed to retrieve price data for BTC or ETHH",
       });
     }
 

@@ -7,7 +7,7 @@ const {
   Ed25519PrivateKey,
 } = require("@aptos-labs/ts-sdk");
 const {
-  getPythOracleData,
+  getLatestPriceUpdates,
 } = require("../controllers/oracle_controller/pythOracleDataController");
 const { MongoClient } = require("mongodb");
 const { ChatOpenAI } = require("@langchain/openai");
@@ -525,16 +525,39 @@ exports.monitorAgents = async (req, res) => {
 
     // Getting the recent price data for the current timestamp using Pyth open-API
     const priceIds = [
-      "0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43", // BTC
-      "0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace", // ETH
+      "e62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43", // BTC
+      "ff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace", // ETH
     ];
 
     // Get price updates from Pyth Oracle
-    const priceUpdates = await getPythOracleData(priceIds);
+    const priceUpdates = await getLatestPriceUpdates(priceIds);
+
+    const processedUpdates = priceUpdates.map((update) => {
+      // Extract the price, confidence, and timestamp from the nested structure
+      const price =
+        parseFloat(update.price.price) / Math.pow(10, update.price.expo);
+      const confidence =
+        parseFloat(update.price.conf) / Math.pow(10, update.price.expo);
+      const publish_time = new Date(
+        update.price.publish_time * 1000
+      ).toISOString();
+
+      return {
+        id: update.id,
+        price,
+        confidence,
+        publish_time,
+        // Include other relevant data as needed
+      };
+    });
 
     // Extract BTC and ETH data
-    const btcData = priceUpdates.find((update) => update.id === priceIds[0]);
-    const ethData = priceUpdates.find((update) => update.id === priceIds[1]);
+    const btcData = processedUpdates.find(
+      (update) => update.id === priceIds[0]
+    );
+    const ethData = processedUpdates.find(
+      (update) => update.id === priceIds[1]
+    );
 
     if (!btcData || !ethData) {
       return res.status(500).json({
@@ -545,7 +568,9 @@ exports.monitorAgents = async (req, res) => {
 
     // Generate embeddings for current price data
     const btcEmbedding = await generateEmbedding(btcData);
+    console.log("BTC Embedding current price:", btcEmbedding);
     const ethEmbedding = await generateEmbedding(ethData);
+    console.log("ETH Embedding current price:", ethEmbedding); //WORKING
 
     // Find similar historical patterns
     const btcSimilarPatterns = await findSimilarPricePatterns(
@@ -623,6 +648,89 @@ exports.setupMonitoringCron = () => {
     }
   });
   console.log("AI agent monitoring cron job scheduled");
+};
+
+// Store the cron job instance so we can stop it later
+let cronJob = null;
+
+// Start the cron job with custom interval
+exports.startCronJob = (req, res) => {
+  try {
+    if (cronJob) {
+      return res.status(400).json({
+        success: false,
+        message: "Cron job is already running",
+      });
+    }
+
+    // Get interval from request or use default (every 2 minutes)
+    const { interval = "*/1 * * * *" } = req.body;
+
+    cronJob = cron.schedule(interval, async () => {
+      console.log(
+        `Running AI agent monitoring job at ${new Date().toISOString()}...`
+      );
+      try {
+        // Create a mock request and response for the cron job
+        const mockReq = { body: { strategy: "moderate risk" } };
+        const mockRes = {
+          status: (code) => ({
+            json: (data) => {
+              console.log(`Cron job completed with status ${code}`);
+              if (code >= 400) {
+                console.error("Error in cron job:", data);
+              } else {
+                console.log("Cron job results:", JSON.stringify(data, null, 2));
+              }
+            },
+          }),
+        };
+
+        await exports.monitorAgents(mockReq, mockRes);
+      } catch (error) {
+        console.error("Error in monitoring cron job:", error);
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `AI agent monitoring cron job started with schedule: ${interval}`,
+    });
+  } catch (error) {
+    console.error("Error starting cron job:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to start cron job",
+      details: error.message,
+    });
+  }
+};
+
+// Stop the cron job
+exports.stopCronJob = (req, res) => {
+  try {
+    if (!cronJob) {
+      return res.status(400).json({
+        success: false,
+        message: "No cron job is currently running",
+      });
+    }
+
+    cronJob.stop();
+    cronJob = null;
+
+    return res.status(200).json({
+      success: true,
+      message: "AI agent monitoring cron job stopped",
+    });
+  } catch (err) {
+    console.error("Error stopping cron job:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to stop cron job",
+      details: error.message,
+    });
+  }
 };
 
 // Manual trigger function

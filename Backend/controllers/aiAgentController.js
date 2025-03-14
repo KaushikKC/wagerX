@@ -6,6 +6,34 @@ const {
   Network,
   Ed25519PrivateKey,
 } = require("@aptos-labs/ts-sdk");
+const {
+  getPythOracleData,
+} = require("../controllers/oracle_controller/pythOracleDataController");
+const { MongoClient } = require("mongodb");
+const { OpenAI } = require("langchain/llms/openai");
+const { MemorySaver } = require("@langchain/langgraph");
+const { createReactAgent } = require("@langchain/langgraph/prebuilt");
+const { HumanMessage } = require("@langchain/core/messages");
+const { OpenAIEmbeddings } = require("@langchain/openai");
+const cron = require("node-cron");
+require("dotenv").config();
+
+const mongoUri = process.env.MONGO_URI;
+const dbName = process.env.DB_NAME;
+const btcCollectionName = "btc_prices";
+const ethCollectionName = "eth_prices";
+
+// Initialize OpenAI embeddings
+const embeddings = new OpenAIEmbeddings({
+  openAIApiKey: process.env.OPENAI_API_KEY,
+});
+
+// Initialize OpenAI LLM
+const llm = new OpenAI({
+  temperature: 0.7,
+  model: "gpt-4-turbo",
+  openAIApiKey: process.env.OPENAI_API_KEY,
+});
 
 exports.createAIAgent = async (req, res) => {
   const { userId, strategy } = req.body;
@@ -342,205 +370,271 @@ exports.agentMutlisigExecution = async (req, res) => {
   }
 };
 
-// // const AIAgent = require("../models/AIAgent");
-// const { getLatestPriceUpdates } = require("../services/pythOracleService");
-// // const { MongoClient } = require("mongodb");
-// const { OpenAI } = require("langchain/llms/openai");
-// const { MemorySaver } = require("@langchain/langgraph");
-// const { createReactAgent } = require("@langchain/langgraph/prebuilt");
-// const { HumanMessage } = require("@langchain/core/messages");
-// const { OpenAIEmbeddings } = require("@langchain/openai");
-// const cron = require("node-cron");
-// require("dotenv").config();
+// MongoDB connection
 
-// // MongoDB connection
-// const mongoUri = process.env.MONGODB_URI;
-// const dbName = process.env.DB_NAME;
-// const btcCollectionName = "btc_vector_embeddings";
-// const ethCollectionName = "eth_vector_embeddings";
+// Function to convert price data to vector embeddings
+async function generateEmbedding(priceData) {
+  try {
+    const textToEmbed = `Price: ${priceData.price}, Confidence: ${priceData.confidence}, Timestamp: ${priceData.publish_time}`;
+    const embedding = await embeddings.embedQuery(textToEmbed);
+    return embedding;
+  } catch (error) {
+    console.error("Error generating embedding:", error);
+    throw error;
+  }
+}
 
-// // Initialize OpenAI embeddings
-// const embeddings = new OpenAIEmbeddings({
-//   openAIApiKey: process.env.OPENAI_API_KEY,
-// });
+// Function to find similar historical price patterns
+async function findSimilarPricePatterns(embedding, assetType) {
+  const client = new MongoClient(mongoUri);
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(
+      assetType === "BTC" ? btcCollectionName : ethCollectionName
+    );
 
-// // Initialize OpenAI LLM
-// const llm = new OpenAI({
-//   temperature: 0.7,
-//   model: "gpt-4-turbo",
-//   openAIApiKey: process.env.OPENAI_API_KEY,
-// });
+    const results = await collection
+      .aggregate([
+        {
+          $vectorSearch: {
+            index: "vector_index",
+            path: "vectorEmbedding",
+            queryVector: embedding,
+            numCandidates: 100,
+            limit: 5,
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            price: 1,
+            publish_time: 1,
+            confidence: 1,
+            score: { $meta: "vectorSearchScore" },
+          },
+        },
+      ])
+      .toArray();
 
-// // Function to convert price data to vector embeddings
-// async function generateEmbedding(priceData) {
-//   try {
-//     const textToEmbed = `Price: ${priceData.price}, Confidence: ${priceData.confidence}, Timestamp: ${priceData.publish_time}`;
-//     const embedding = await embeddings.embedQuery(textToEmbed);
-//     return embedding;
-//   } catch (error) {
-//     console.error("Error generating embedding:", error);
-//     throw error;
-//   }
-// }
+    return results;
+  } finally {
+    await client.close();
+  }
+}
 
-// // Function to find similar historical price patterns
-// async function findSimilarPricePatterns(embedding, assetType) {
-//   const client = new MongoClient(mongoUri);
-//   try {
-//     await client.connect();
-//     const db = client.db(dbName);
-//     const collection = db.collection(
-//       assetType === "BTC" ? btcCollectionName : ethCollectionName
-//     );
+// Function to analyze risk using LangChain and OpenAI
+async function analyzeRisk(currentPrice, similarPatterns, strategy) {
+  const memory = new MemorySaver();
 
-//     const results = await collection
-//       .aggregate([
-//         {
-//           $vectorSearch: {
-//             index: "vector_index",
-//             path: "vectorEmbedding",
-//             queryVector: embedding,
-//             numCandidates: 100,
-//             limit: 5,
-//           },
-//         },
-//         {
-//           $project: {
-//             _id: 0,
-//             price: 1,
-//             publish_time: 1,
-//             confidence: 1,
-//             score: { $meta: "vectorSearchScore" },
-//           },
-//         },
-//       ])
-//       .toArray();
+  const tools = [
+    {
+      name: "calculate_risk_score",
+      description: "Calculate a risk score based on price patterns",
+      func: async ({ currentPrice, historicalPatterns, strategy }) => {
+        return {
+          riskScore: Math.floor(Math.random() * 100),
+          recommendation: "This is a placeholder recommendation",
+        };
+      },
+    },
+  ];
 
-//     return results;
-//   } finally {
-//     await client.close();
-//   }
-// }
+  const agent = createReactAgent({
+    llm,
+    tools,
+    checkpointSaver: memory,
+    messageModifier: ` You are a cryptocurrency trading risk analyst. Your job is to analyze current price data compared to historical patterns and determine a risk score from 0-100. Consider the user's risk strategy: "low risk" means conservative approach, prioritize capital preservation "moderate risk" means balanced approach, seeking moderate growth with reasonable risk "high risk" means aggressive approach, seeking high growth with higher risk tolerance Provide a risk score and a clear recommendation on whether to place a bet on the market rising or falling. Be concise and data-driven in your analysis. `,
+  });
 
-// // Function to analyze risk using LangChain and OpenAI
-// async function analyzeRisk(currentPrice, similarPatterns, strategy) {
-//   const memory = new MemorySaver();
+  const prompt = ` Analyze the following cryptocurrency data:
+    Current Price: ${currentPrice.price} USD
+    Current Confidence: ${currentPrice.confidence}
+    Current Timestamp: ${currentPrice.publish_time}
+    Similar Historical Patterns: ${JSON.stringify(similarPatterns, null, 2)}
+    User Risk Strategy: ${strategy}`;
 
-//   const tools = [
-//     {
-//       name: "calculate_risk_score",
-//       description: "Calculate a risk score based on price patterns",
-//       func: async ({ currentPrice, historicalPatterns, strategy }) => {
-//         return {
-//           riskScore: Math.floor(Math.random() * 100),
-//           recommendation: "This is a placeholder recommendation",
-//         };
-//       },
-//     },
-//   ];
+  try {
+    const result = await agent.invoke({ messages: [new HumanMessage(prompt)] });
+    const lastMessage = result.messages[result.messages.length - 1];
+    const analysisText = lastMessage.content;
 
-//   const agent = createReactAgent({
-//     llm,
-//     tools,
-//     checkpointSaver: memory,
-//     messageModifier: ` You are a cryptocurrency trading risk analyst. Your job is to analyze current price data compared to historical patterns and determine a risk score from 0-100. Consider the user's risk strategy: "low risk" means conservative approach, prioritize capital preservation "moderate risk" means balanced approach, seeking moderate growth with reasonable risk "high risk" means aggressive approach, seeking high growth with higher risk tolerance Provide a risk score and a clear recommendation on whether to place a bet on the market rising or falling. Be concise and data-driven in your analysis. `,
-//   });
+    // Extract risk score and recommendation from analysis text
+    // This is a simple extraction method - you might want to improve this
+    let riskScore = 50; // Default
+    let recommendation = "hold"; // Default
+    let confidence = "medium"; // Default
+    let shouldBet = false; // Default
 
-//   const prompt = ` Analyze the following cryptocurrency data:
-//     Current Price: ${currentPrice.price} USD
-//     Current Confidence: ${currentPrice.confidence}
-//     Current Timestamp: ${currentPrice.publish_time}
-//     Similar Historical Patterns: ${JSON.stringify(similarPatterns, null, 2)}
-//     User Risk Strategy: ${strategy}`;
+    // Try to extract risk score
+    const riskScoreMatch = analysisText.match(/risk score:?\s*(\d+)/i);
+    if (riskScoreMatch && riskScoreMatch[1]) {
+      riskScore = parseInt(riskScoreMatch[1]);
+    }
 
-//   try {
-//     const result = await agent.invoke({ messages: [new HumanMessage(prompt)] });
-//     const lastMessage = result.messages[result.messages.length - 1];
-//     const analysisText = lastMessage.content;
+    // Try to extract recommendation
+    if (
+      analysisText.toLowerCase().includes("buy") ||
+      analysisText.toLowerCase().includes("rising")
+    ) {
+      recommendation = "buy";
+      shouldBet = true;
+    } else if (
+      analysisText.toLowerCase().includes("sell") ||
+      analysisText.toLowerCase().includes("falling")
+    ) {
+      recommendation = "sell";
+      shouldBet = true;
+    }
 
-//     return {
-//       riskScore: 50, // Placeholder parsing
-//       recommendation: "hold",
-//       confidence: "medium",
-//       shouldBet: false,
-//       fullAnalysis: analysisText,
-//     };
-//   } catch (error) {
-//     console.error("Error analyzing risk:", error);
-//     throw error;
-//   }
-// }
+    // Try to extract confidence
+    if (analysisText.toLowerCase().includes("high confidence")) {
+      confidence = "high";
+    } else if (analysisText.toLowerCase().includes("low confidence")) {
+      confidence = "low";
+    }
 
-// // Main monitoring function
-// exports.monitorAgents = async (req, res) => {
-//   try {
-//     const activeAgents = await AIAgent.find({ active: true });
-//     if (activeAgents.length === 0) {
-//       return res
-//         .status(200)
-//         .json({ success: true, message: "No active AI agents to monitor" });
-//     }
+    return {
+      riskScore,
+      recommendation,
+      confidence,
+      shouldBet,
+      fullAnalysis: analysisText,
+    };
+  } catch (error) {
+    console.error("Error analyzing risk:", error);
+    throw error;
+  }
+}
 
-//     const priceIds = [
-//       "0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43",
-//       "0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace",
-//     ];
-//     const priceUpdates = await getLatestPriceUpdates(priceIds);
+// Main monitoring function
+exports.monitorAgents = async (req, res) => {
+  try {
+    // Get strategy from request or use default
+    const { strategy = "moderate risk" } = req.body;
 
-//     const btcData = priceUpdates.find((update) => update.id === priceIds[0]);
-//     const ethData = priceUpdates.find((update) => update.id === priceIds[1]);
+    // Validate strategy
+    const validStrategies = ["low risk", "moderate risk", "high risk"];
+    if (!validStrategies.includes(strategy)) {
+      return res.status(400).json({
+        success: false,
+        error:
+          "Invalid strategy. Must be one of: low risk, moderate risk, high risk",
+      });
+    }
 
-//     const btcEmbedding = await generateEmbedding(btcData);
-//     const ethEmbedding = await generateEmbedding(ethData);
+    // Getting the recent price data for the current timestamp using Pyth open-API
+    const priceIds = [
+      "0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43", // BTC
+      "0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace", // ETH
+    ];
 
-//     const btcSimilarPatterns = await findSimilarPricePatterns(
-//       btcEmbedding,
-//       "BTC"
-//     );
-//     const ethSimilarPatterns = await findSimilarPricePatterns(
-//       ethEmbedding,
-//       "ETH"
-//     );
+    // Get price updates from Pyth Oracle
+    const priceUpdates = await getPythOracleData(priceIds);
 
-//     return res
-//       .status(200)
-//       .json({ success: true, message: "Monitoring completed" });
-//   } catch (error) {
-//     console.error("AI Agent monitoring error:", error);
-//     return res.status(500).json({
-//       success: false,
-//       error: "Failed to monitor AI agents",
-//       details: error.message,
-//     });
-//   }
-// };
+    // Extract BTC and ETH data
+    const btcData = priceUpdates.find((update) => update.id === priceIds[0]);
+    const ethData = priceUpdates.find((update) => update.id === priceIds[1]);
 
-// // Setup cron job
-// exports.setupMonitoringCron = () => {
-//   cron.schedule("0 */6 * * *", async () => {
-//     console.log("Running AI agent monitoring job...");
-//     try {
-//       await exports.monitorAgents(
-//         {},
-//         { status: () => ({ json: console.log }) }
-//       );
-//     } catch (error) {
-//       console.error("Error in monitoring cron job:", error);
-//     }
-//   });
-//   console.log("AI agent monitoring cron job scheduled");
-// };
+    if (!btcData || !ethData) {
+      return res.status(500).json({
+        success: false,
+        error: "Failed to retrieve price data for BTC or ETH",
+      });
+    }
 
-// // Manual trigger function
-// exports.triggerMonitoring = async (req, res) => {
-//   try {
-//     return await exports.monitorAgents(req, res);
-//   } catch (error) {
-//     console.error("Manual trigger error:", error);
-//     return res.status(500).json({
-//       success: false,
-//       error: "Failed to manually trigger monitoring",
-//       details: error.message,
-//     });
-//   }
-// };
+    // Generate embeddings for current price data
+    const btcEmbedding = await generateEmbedding(btcData);
+    const ethEmbedding = await generateEmbedding(ethData);
+
+    // Find similar historical patterns
+    const btcSimilarPatterns = await findSimilarPricePatterns(
+      btcEmbedding,
+      "BTC"
+    );
+    const ethSimilarPatterns = await findSimilarPricePatterns(
+      ethEmbedding,
+      "ETH"
+    );
+
+    // Analyze risk for both BTC and ETH
+    const btcRiskAnalysis = await analyzeRisk(
+      btcData,
+      btcSimilarPatterns,
+      strategy
+    );
+    const ethRiskAnalysis = await analyzeRisk(
+      ethData,
+      ethSimilarPatterns,
+      strategy
+    );
+
+    // Return the analysis results
+    return res.status(200).json({
+      success: true,
+      message: "Monitoring and risk analysis completed",
+      data: {
+        btc: {
+          currentPrice: btcData,
+          similarPatterns: btcSimilarPatterns,
+          riskAnalysis: btcRiskAnalysis,
+        },
+        eth: {
+          currentPrice: ethData,
+          similarPatterns: ethSimilarPatterns,
+          riskAnalysis: ethRiskAnalysis,
+        },
+        strategy,
+      },
+    });
+  } catch (error) {
+    console.error("AI Agent monitoring error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to monitor AI agents",
+      details: error.message,
+    });
+  }
+};
+
+// Setup cron job
+exports.setupMonitoringCron = () => {
+  cron.schedule("0 */6 * * *", async () => {
+    console.log("Running AI agent monitoring job...");
+    try {
+      // Create a mock request and response for the cron job
+      const mockReq = { body: { strategy: "moderate risk" } };
+      const mockRes = {
+        status: (code) => ({
+          json: (data) => {
+            console.log(`Cron job completed with status ${code}`);
+            if (code >= 400) {
+              console.error("Error in cron job:", data);
+            } else {
+              console.log("Cron job results:", JSON.stringify(data, null, 2));
+            }
+          },
+        }),
+      };
+
+      await exports.monitorAgents(mockReq, mockRes);
+    } catch (error) {
+      console.error("Error in monitoring cron job:", error);
+    }
+  });
+  console.log("AI agent monitoring cron job scheduled");
+};
+
+// Manual trigger function
+exports.triggerMonitoring = async (req, res) => {
+  try {
+    return await exports.monitorAgents(req, res);
+  } catch (error) {
+    console.error("Manual trigger error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to manually trigger monitoring",
+      details: error.message,
+    });
+  }
+};

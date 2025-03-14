@@ -10,7 +10,7 @@ const {
   getPythOracleData,
 } = require("../controllers/oracle_controller/pythOracleDataController");
 const { MongoClient } = require("mongodb");
-const { OpenAI } = require("langchain/llms/openai");
+const { ChatOpenAI } = require("@langchain/openai");
 const { MemorySaver } = require("@langchain/langgraph");
 const { createReactAgent } = require("@langchain/langgraph/prebuilt");
 const { HumanMessage } = require("@langchain/core/messages");
@@ -29,7 +29,7 @@ const embeddings = new OpenAIEmbeddings({
 });
 
 // Initialize OpenAI LLM
-const llm = new OpenAI({
+const llm = new ChatOpenAI({
   temperature: 0.7,
   model: "gpt-4-turbo",
   openAIApiKey: process.env.OPENAI_API_KEY,

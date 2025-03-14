@@ -425,37 +425,155 @@ async function findSimilarPricePatterns(embedding, assetType) {
 
 // Function to analyze risk using LangChain and OpenAI
 async function analyzeRisk(currentPrice, similarPatterns, strategy) {
-  const memory = new MemorySaver();
-
-  const tools = [
-    {
-      name: "calculate_risk_score",
-      description: "Calculate a risk score based on price patterns",
-      func: async ({ currentPrice, historicalPatterns, strategy }) => {
-        return {
-          riskScore: Math.floor(Math.random() * 100),
-          recommendation: "This is a placeholder recommendation",
-        };
-      },
-    },
-  ];
-
-  const agent = createReactAgent({
-    llm,
-    tools,
-    checkpointSaver: memory,
-    messageModifier: ` You are a cryptocurrency trading risk analyst. Your job is to analyze current price data compared to historical patterns and determine a risk score from 0-100. Consider the user's risk strategy: "low risk" means conservative approach, prioritize capital preservation "moderate risk" means balanced approach, seeking moderate growth with reasonable risk "high risk" means aggressive approach, seeking high growth with higher risk tolerance Provide a risk score and a clear recommendation on whether to place a bet on the market rising or falling. Be concise and data-driven in your analysis. `,
-  });
-
-  const prompt = ` Analyze the following cryptocurrency data:
-    Current Price: ${currentPrice.price} USD
-    Current Confidence: ${currentPrice.confidence}
-    Current Timestamp: ${currentPrice.publish_time}
-    Similar Historical Patterns: ${JSON.stringify(similarPatterns, null, 2)}
-    User Risk Strategy: ${strategy}`;
-
   try {
-    const result = await agent.invoke({ messages: [new HumanMessage(prompt)] });
+    const tools = [
+      {
+        type: "function",
+        name: "calculate_risk_score",
+        description: "Calculate a risk score based on price patterns",
+        function: {
+          name: "calculate_risk_score",
+          description: "Calculate a risk score based on price patterns",
+          parameters: {
+            type: "object",
+            properties: {
+              currentPrice: {
+                type: "object",
+                description: "The current price data",
+                properties: {
+                  price: {
+                    type: "number",
+                    description: "The current price in USD",
+                  },
+                  confidence: {
+                    type: "number",
+                    description: "Confidence level of the price",
+                  },
+                  publish_time: {
+                    type: "string",
+                    description: "Timestamp when the price was published",
+                  },
+                },
+              },
+              historicalPatterns: {
+                type: "array",
+                description: "Array of similar historical price patterns",
+                items: {
+                  type: "object",
+                  properties: {
+                    price: {
+                      type: "number",
+                      description: "Historical price in USD",
+                    },
+                    confidence: {
+                      type: "number",
+                      description: "Confidence level of the historical price",
+                    },
+                    publish_time: {
+                      type: "string",
+                      description:
+                        "Timestamp when the historical price was published",
+                    },
+                    score: {
+                      type: "number",
+                      description:
+                        "Similarity score to the current price pattern",
+                    },
+                  },
+                },
+              },
+              strategy: {
+                type: "string",
+                description:
+                  "The risk strategy (low risk, moderate risk, high risk)",
+                enum: ["low risk", "moderate risk", "high risk"],
+              },
+            },
+            required: ["currentPrice", "historicalPatterns", "strategy"],
+          },
+        },
+        func: async ({ currentPrice, historicalPatterns, strategy }) => {
+          // Implement a more realistic risk calculation based on the data
+          // This is a simple example - you would want more sophisticated logic in production
+          let riskScore = 50; // Default moderate risk
+          let recommendation = "hold";
+
+          // Calculate average historical price
+          const avgHistoricalPrice =
+            historicalPatterns.reduce(
+              (sum, pattern) => sum + pattern.price,
+              0
+            ) / (historicalPatterns.length || 1);
+
+          // Calculate price trend (positive = rising, negative = falling)
+          const priceTrend = currentPrice.price - avgHistoricalPrice;
+
+          // Adjust risk score based on strategy
+          if (strategy === "low risk") {
+            riskScore = 30 + (priceTrend > 0 ? 10 : -10);
+          } else if (strategy === "moderate risk") {
+            riskScore = 50 + (priceTrend > 0 ? 15 : -15);
+          } else if (strategy === "high risk") {
+            riskScore = 70 + (priceTrend > 0 ? 20 : -20);
+          }
+
+          // Ensure risk score is within 0-100 range
+          riskScore = Math.max(0, Math.min(100, riskScore));
+
+          // Determine recommendation based on price trend and risk score
+          if (priceTrend > 0 && riskScore > 60) {
+            recommendation = "Price is likely to rise. Consider buying.";
+          } else if (priceTrend < 0 && riskScore > 60) {
+            recommendation = "Price is likely to fall. Consider selling.";
+          } else {
+            recommendation =
+              "Market conditions are uncertain. Consider holding.";
+          }
+
+          return {
+            riskScore,
+            recommendation,
+          };
+        },
+      },
+    ];
+
+    // Create the agent with a more specific message modifier to help it complete the task
+    const agent = createReactAgent({
+      llm,
+      tools,
+      messageModifier: `You are a cryptocurrency trading risk analyst. Your job is to analyze current price data compared to historical patterns and determine a risk score from 0-100.
+
+For the user's risk strategy:
+- "low risk" means conservative approach, prioritize capital preservation
+- "moderate risk" means balanced approach, seeking moderate growth with reasonable risk
+- "high risk" means aggressive approach, seeking high growth with higher risk tolerance
+
+First, analyze the current price and compare it to the historical patterns.
+Then, use the calculate_risk_score tool to get a risk assessment.
+Finally, provide a risk score and a clear recommendation on whether to place a bet on the market rising or falling.
+
+Be concise and data-driven in your analysis. Always conclude with a specific recommendation.`,
+    });
+
+    const prompt = `Analyze the following cryptocurrency data:
+      Current Price: ${currentPrice.price} USD
+      Current Confidence: ${currentPrice.confidence}
+      Current Timestamp: ${currentPrice.publish_time}
+      Similar Historical Patterns: ${JSON.stringify(similarPatterns, null, 2)}
+      User Risk Strategy: ${strategy}`;
+
+    // Invoke the agent with recursion limit configuration
+    const result = await agent.invoke(
+      {
+        messages: [new HumanMessage(prompt)],
+      },
+      {
+        recursionLimit: 50, // Increase the recursion limit
+        maxIterations: 10, // Add a maximum iterations limit as a safeguard
+      }
+    );
+
     const lastMessage = result.messages[result.messages.length - 1];
     const analysisText = lastMessage.content;
 
@@ -664,7 +782,7 @@ exports.startCronJob = (req, res) => {
     }
 
     // Get interval from request or use default (every 2 minutes)
-    const { interval = "*/1 * * * *" } = req.body;
+    const { interval = "*/2 * * * *" } = req.body;
 
     cronJob = cron.schedule(interval, async () => {
       console.log(
